@@ -1,0 +1,148 @@
+:root{
+  --bg: #0b0d10;
+  --panel: #12161b;
+  --text: #e8edf2;
+  --muted: #9fb0c3;
+  --accent: #5b9cff;
+  --accent-2: #7bdc8b;
+  --ring: rgba(91,156,255,0.35);
+  --shadow: 0 10px 26px rgba(0,0,0,0.35);
+}
+
+*{ box-sizing: border-box; }
+html, body{ height: 100%; }
+body{
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: radial-gradient(1100px 800px at 10% -10%, #132033 0%, transparent 70%),
+              radial-gradient(900px 700px at 100% 0%, #1a2638 0%, transparent 60%),
+              var(--bg);
+}
+
+.container{ width: min(1100px, 92%); margin: 0 auto; }
+.row{ display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+
+.site-header{
+  position: sticky; top: 0; z-index: 20;
+  background: rgba(11,13,16,0.65);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #1d2631;
+}
+.brand{ display: flex; align-items: center; gap: .6rem; text-decoration: none; color: var(--text); font-weight: 800; }
+.brand-mark{ font-size: 1.4rem; }
+.brand-text{ letter-spacing: .5px; }
+
+.topnav .btn{ margin-left: .25rem; }
+
+.hero{ padding: 48px 0 22px; }
+h1{ font-size: clamp(28px, 3.6vw, 44px); margin: 0 0 8px; }
+.lead{ color: var(--muted); max-width: 60ch; }
+
+.filters{ margin-top: 18px; gap: .6rem; }
+.input{
+  border: 1px solid #243244;
+  background: #0e131a;
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 10px;
+  outline: none;
+}
+.input:focus{ border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+
+.btn{
+  border: 1px solid #294161;
+  background: #122033;
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn:hover{ border-color: var(--accent); }
+.btn.ghost{ background: transparent; }
+
+.projects{ padding: 20px 0 50px; }
+.grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.card{
+  background: linear-gradient(180deg, #121721 0%, #0f141c 100%);
+  border: 1px solid #1f2a3a;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.card h3{ margin: 0; font-size: 18px; }
+.card p{ margin: 0; color: var(--muted); }
+.tags{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.tag{
+  font-size: 12px; color: #cdd9e6;
+  background: #0f1a27;
+  border: 1px solid #1f2a3a;
+  padding: 4px 8px; border-radius: 999px;
+}
+.card .row{ gap: .5rem; }
+.card .btn{ flex: 1; text-align: center; }
+
+.site-footer{
+  border-top: 1px solid #1d2631;
+  padding: 18px 0;
+  color: var(--muted);
+  background: #0b0e12;
+}
+.foot-links a{ color: var(--muted); text-decoration: none; margin-left: 10px; }
+
+.about, .contact{ padding: 30px 0; }
+.about h2, .contact h2{ margin-top: 0; }
+
+.modal{
+  position: fixed; inset: 0; display: none; z-index: 50;
+}
+.modal[aria-hidden="false"]{ display: block; }
+.modal-backdrop{
+  position: absolute; inset: 0; background: rgba(0,0,0,0.6);
+}
+.modal-dialog{
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(1000px, 92%); height: min(80vh, 720px);
+  background: #0f141b; border: 1px solid #1f2a3a; border-radius: 14px;
+  padding: 14px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column;
+}
+.modal-close{
+  align-self: flex-end; border: 1px solid #2a3c58;
+  background: #121b29; color: var(--text);
+  border-radius: 10px; padding: 6px 10px; cursor: pointer;
+}
+.modal h3{ margin: 0 0 10px; }
+.modal iframe{
+  flex: 1; width: 100%; border: none;
+  background: #0a0f14; border-radius: 10px;
+}
+
+/* Light theme */
+.light{
+  --bg: #f6f8fb;
+  --panel: #ffffff;
+  --text: #111419;
+  --muted: #4d5a69;
+  --accent: #2b6cff;
+  --accent-2: #17a36f;
+  --ring: rgba(43,108,255,0.25);
+  --shadow: 0 10px 26px rgba(0,0,0,0.08);
+}
+.light body{ background: #f6f8fb; }
+.light .site-header{ background: rgba(255,255,255,0.7); }
+.light .card{ background: #ffffff; border-color: #e8edf5; }
+.light .input{ background: #fff; border-color: #d7e0ee; color: #111419; }
+.light .btn{ background: #f4f7fb; border-color: #d7e0ee; color: #111419; }
+.light .btn.ghost{ background: transparent; }
+.light .tag{ background: #eef3fb; border-color: #d7e0ee; color: #1b2b42; }
