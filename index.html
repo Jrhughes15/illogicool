@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Illogicool — Jimmy’s Projects</title>
+  <meta name="description" content="Portfolio of small web games, tools, and experiments by Jimmy at illogicool.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container row">
+      <a class="brand" href="/">
+        <span class="brand-mark">🧪</span>
+        <span class="brand-text">illogicool</span>
+      </a>
+      <nav class="topnav">
+        <button id="btnTheme" class="btn">Toggle theme</button>
+        <a class="btn ghost" href="#projects">Projects</a>
+        <a class="btn ghost" href="#about">About</a>
+        <a class="btn ghost" href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Web games, tools, and odd little experiments</h1>
+        <p class="lead">
+          I build HTML, CSS, and JavaScript projects. Play with live demos below or open the repos for code.
+        </p>
+        <div class="filters row">
+          <input id="search" class="input" type="search" placeholder="Search projects or tags" />
+          <select id="sort" class="input">
+            <option value="newest">Newest</option>
+            <option value="alpha">A to Z</option>
+            <option value="popular">Most stars</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="projects">
+      <div class="container">
+        <div id="projectsGrid" class="grid"></div>
+      </div>
+    </section>
+
+    <section id="about" class="about">
+      <div class="container">
+        <h2>About</h2>
+        <p>
+          I make small web games and utilities. I like clean UI, readable code, and quick iteration.
+          Everything here is static and deploys anywhere.
+        </p>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <div class="container">
+        <h2>Contact</h2>
+        <p>
+          Questions or collaboration ideas
+          <a href="mailto:hello@illogicool.com">hello@illogicool.com</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container row">
+      <small>© <span id="year"></span> illogicool</small>
+      <div class="foot-links">
+        <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://x.com" target="_blank" rel="noopener">X</a>
+        <a href="https://www.youtube.com" target="_blank" rel="noopener">YouTube</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal for live demo -->
+  <div id="demoModal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="demoTitle">
+      <button class="modal-close" title="Close" data-close>×</button>
+      <h3 id="demoTitle"></h3>
+      <iframe id="demoFrame" title="Live demo" loading="lazy"></iframe>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
