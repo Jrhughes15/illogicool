@@ -1,54 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Illogicool — Portfolio & Projects</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Illogicool — Jimmy’s Projects</title>
+  <meta name="description" content="Portfolio of web games, tools, and experiments by Jimmy at illogicool.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <nav>
-      <h1 class="site-title">illogicool</h1>
-      <div class="nav-links">
-        <a href="#projects">Projects</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-      </div>
-      <button id="btnTheme" class="btn small">Toggle theme</button>
-    </nav>
-    <div class="hero">
-      <h2>Web games, tools, and odd little experiments</h2>
-      <p class="tagline">Director • Maker • Game Dev • Builder of useful and playful things</p>
-      <input id="search" type="search" placeholder="Search projects or tags" />
-      <select id="sort">
-        <option value="newest">Newest</option>
-        <option value="alpha">A → Z</option>
-        <option value="popular">Most stars</option>
-      </select>
+  <header class="site-header">
+    <div class="container row">
+      <a class="brand" href="/">
+        <span class="brand-mark">🧪</span>
+        <span class="brand-text">illogicool</span>
+      </a>
+      <nav class="topnav">
+        <button id="btnTheme" class="btn">Toggle theme</button>
+        <a class="btn ghost" href="#projects">Projects</a>
+        <a class="btn ghost" href="#about">About</a>
+        <a class="btn ghost" href="#contact">Contact</a>
+      </nav>
     </div>
   </header>
 
   <main>
-    <!-- Projects -->
-    <section id="projects" class="projects">
-      <div id="projectsGrid" class="grid"></div>
-    </section>
-
-    <!-- Live preview -->
-    <section id="livePreview" class="preview" hidden>
-      <div class="preview-header">
-        <h3 id="previewTitle">Preview</h3>
-        <div class="row">
-          <a id="btnOpenNew" class="btn" href="#" target="_blank" rel="noopener">Open full</a>
-          <button id="btnFullscreen" class="btn ghost">Fullscreen</button>
-          <button id="btnClosePreview" class="btn danger">Close</button>
+    <section class="hero">
+      <div class="container">
+        <h1>Web games, tools, and odd little experiments</h1>
+        <p class="lead">Director • Maker • Game Dev • Builder of useful and playful things</p>
+        <div class="filters row">
+          <input id="search" class="input" type="search" placeholder="Search projects or tags" />
+          <select id="sort" class="input">
+            <option value="newest">Newest</option>
+            <option value="alpha">A to Z</option>
+            <option value="popular">Most stars</option>
+          </select>
         </div>
       </div>
-      <iframe id="previewFrame" src="about:blank"></iframe>
     </section>
 
-    <!-- About -->
+    <!-- Live preview panel -->
+    <section id="livePreview" class="preview" hidden>
+      <div class="container">
+        <div class="preview-shell">
+          <div class="preview-bar">
+            <div class="preview-title">
+              <span id="previewTitle">Preview</span>
+            </div>
+            <div class="preview-actions">
+              <a id="btnOpenNew" class="btn ghost" href="#" target="_blank" rel="noopener">Open full</a>
+              <button id="btnFullscreen" class="btn">Fullscreen</button>
+              <button id="btnClosePreview" class="btn">Close</button>
+            </div>
+          </div>
+          <iframe id="previewFrame" title="Live project preview" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="projects">
+      <div class="container">
+        <div id="projectsGrid" class="grid"></div>
+      </div>
+    </section>
+
     <section id="about" class="about">
       <div class="container">
         <h2>About</h2>
@@ -58,31 +75,27 @@
           and <strong>personal projects</strong>, where I code games, build web apps, and experiment with CNC and digital art.
           I enjoy turning ideas into real, playable, usable things.
         </p>
-        <p>
-          <a href="https://www.buymeacoffee.com/jimmyhughes" target="_blank" rel="noopener">
-            <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=jimmyhughes&button_colour=436b3d&font_colour=ffffff&font_family=Inter&outline_colour=ffffff&coffee_colour=FFDD00" 
-                 alt="Buy Me A Coffee" />
-          </a>
-        </p>
       </div>
     </section>
 
-    <!-- Contact -->
     <section id="contact" class="contact">
-      <h2>Contact</h2>
-      <p>Reach me at <a href="mailto:jrhughes15@gmail.com">jrhughes15@gmail.com</a></p>
-      <p>
-        <a href="https://www.buymeacoffee.com/jimmyhughes" target="_blank" rel="noopener">
-          <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=jimmyhughes&button_colour=436b3d&font_colour=ffffff&font_family=Inter&outline_colour=ffffff&coffee_colour=FFDD00" 
-               alt="Buy Me A Coffee" />
-        </a>
-      </p>
+      <div class="container">
+        <h2>Contact</h2>
+        <p>Reach me at <a href="mailto:hello@illogicool.com">hello@illogicool.com</a></p>
+        <p>
+          <a class="btn coffee" href="https://www.buymeacoffee.com/jimmyhughes" target="_blank" rel="noopener">Buy me a coffee</a>
+        </p>
+      </div>
     </section>
   </main>
 
-  <footer>
-    <p>&copy; <span id="year"></span> Illogicool</p>
-    <a href="https://github.com/jrhughes15/illogicool" target="_blank" rel="noopener">GitHub</a>
+  <footer class="site-footer">
+    <div class="container row">
+      <small>© <span id="year"></span> illogicool</small>
+      <div class="foot-links">
+        <a href="https://github.com/jrhughes15/illogicool" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
   </footer>
 
   <script src="app.js"></script>
