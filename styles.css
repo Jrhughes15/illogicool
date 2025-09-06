@@ -28,8 +28,6 @@ body{
   background: rgba(11,13,16,0.65);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid #1d2631;
-  height: 56px;
-  padding: 10px;
 }
 .brand{ display: flex; align-items: center; gap: .6rem; text-decoration: none; color: var(--text); font-weight: 800; }
 .brand-mark{ font-size: 1.4rem; }
@@ -60,17 +58,34 @@ h1{ font-size: clamp(28px, 3.6vw, 44px); margin: 0 0 8px; }
   border-radius: 12px;
   cursor: pointer;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  line-height: 1;
 }
 .btn:hover{ border-color: var(--accent); }
 .btn.ghost{ background: transparent; }
 
+/* Coffee button (theme-matched, no external image) */
+.btn.coffee{
+  border-color: #34563a;
+  background: #1a2a1e;
+}
+.btn.coffee::before{
+  content: "☕";
+  font-size: 1rem;
+}
+.btn.coffee:hover{
+  border-color: #48b56a;
+}
+
+/* Projects grid/cards */
 .projects{ padding: 20px 0 50px; }
 .grid{
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
 }
-
 .card{
   background: linear-gradient(180deg, #121721 0%, #0f141c 100%);
   border: 1px solid #1f2a3a;
@@ -152,3 +167,4 @@ h1{ font-size: clamp(28px, 3.6vw, 44px); margin: 0 0 8px; }
 .light .tag{ background: #eef3fb; border-color: #d7e0ee; color: #1b2b42; }
 .light .preview-shell{ background: #ffffff; border-color: #e8edf5; }
 .light .preview-bar{ background: #f7f9fc; border-color: #e1e9f6; }
+.light .btn.coffee{ background: #eaf6eb; border-color: #9bd2a8; color: #113; }
