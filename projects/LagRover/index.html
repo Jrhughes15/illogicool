@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LagRover v3.8</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Header / Brand -->
+  <header class="header">
+    <div class="brand">
+      <h1>LagRover</h1>
+      <span class="ver">v3.8</span>
+    </div>
+  </header>
+
+  <!-- Seed Bar -->
+  <div class="seedbar">
+    <span class="seed">Seed: <strong id="seed">—</strong></span>
+    <input id="seedInput" type="text" placeholder="Paste a seed…" class="btn" style="min-width:200px" />
+    <button class="btn" id="btnLoadSeed">Load Seed</button>
+    <button class="btn" id="btnCopySeed">Copy Seed</button>
+
+    <select id="levelSelect" class="btn">
+      <option value="random" selected>Random Sector</option>
+      <option value="tutorial1">Tutorial 1</option>
+      <option value="tutorial2">Tutorial 2</option>
+      <option value="tutorial3">Tutorial 3</option>
+    </select>
+
+    <button class="btn" id="btnReseed">Reseed</button>
+  </div>
+
+  <!-- 3 Column Layout -->
+  <main class="layout layout-3col">
+
+    <!-- Left Column -->
+    <section class="col-left space-y-8">
+      <!-- Objectives -->
+      <div class="panel objectives">
+        <h3>Objectives</h3>
+        <div id="missionStory" class="story">—</div>
+        <ul id="objectives"></ul>
+      </div>
+
+      <!-- Inventory -->
+      <div class="panel inventory">
+        <h3>Inventory</h3>
+        <div class="help">Use <span class="mono">DROP n</span> to drop the item with index <span class="mono">n</span> at your current tile.</div>
+        <ul id="inventory"></ul>
+      </div>
+
+      <!-- Crew Messages -->
+      <div class="panel messages">
+        <h3>Crew Messages</h3>
+        <button class="btn" id="btnCrew">Ping Crew (demo)</button>
+        <div id="messages" style="margin-top:8px; max-height:220px; overflow:auto;"></div>
+      </div>
+    </section>
+
+    <!-- Middle Column -->
+    <section class="col-mid">
+      <div class="canvaswrap">
+        <!-- Canvas sized to fit labels drawn around it -->
+        <canvas id="game" width="800" height="660"></canvas>
+
+        <!-- Telemetry / HUD -->
+        <div class="hud mono">
+          <span>pos <span id="pos">0,0</span></span>
+          &nbsp; dir <span id="dir">E</span>
+          &nbsp; h<span id="height">0</span>
+          &nbsp; bat <span id="bat">100</span>%
+          &nbsp; mode <span id="mode">GROUND</span>
+          &nbsp; time <span id="time">0</span>s
+          &nbsp; day <span id="daylight">Day</span>
+          &nbsp; lag <span id="lagTxt">3</span>s
+          <span id="hoverInfo"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column -->
+    <section class="col-right space-y-8">
+      <!-- Mission Console -->
+      <div class="panel console">
+        <h3>Mission Console</h3>
+        <textarea id="code" class="codeArea" spellcheck="false" placeholder="Type commands (F 4, R, F 1, DRILL, PICKUP, HOVER, DROP 1)"></textarea>
+
+        <div class="controls">
+          <button class="btn" id="btnTransmit">Send (Ctrl/Cmd+Enter)</button>
+          <button class="btn" id="btnRun">Run</button>
+          <button class="btn" id="btnStop">Stop</button>
+          <button class="btn" id="btnStep">Tick +1s</button>
+          <button class="btn" id="btnReset">Reset</button>
+          <button class="btn" id="btnHelp">Help</button>
+
+          <div style="display:flex; align-items:center; gap:8px; margin-left:auto;">
+            <div class="subtle">Transmit lag:</div>
+            <input id="lag" class="range" type="range" min="0" max="10" step="1" value="3" />
+            <div id="lagLabel" class="subtle">3s</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transmission Queue -->
+      <div class="panel">
+        <h3>Transmission Queue</h3>
+        <div id="queue" class="queue"></div>
+      </div>
+
+      <!-- Log -->
+      <div class="panel">
+        <h3>Log</h3>
+        <div id="log" class="log mono"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Help / Legend Modal -->
+  <div id="helpModal" class="modal hidden">
+    <div id="helpBackdrop" class="backdrop"></div>
+    <div class="dialog">
+      <header>
+        <h3>Help &amp; Legend</h3>
+        <button id="helpClose" class="close">Close</button>
+      </header>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+        <!-- Commands -->
+        <div class="panel" style="margin:0;">
+          <h3>Command Reference</h3>
+          <table class="legendTable" style="width:100%;">
+            <tbody>
+              <tr><td class="mono">F n</td><td>Forward n tiles</td></tr>
+              <tr><td class="mono">B n</td><td>Backward n tiles</td></tr>
+              <tr><td class="mono">L / R</td><td>Turn left / right</td></tr>
+              <tr><td class="mono">HOVER n</td><td>Set hover level (0..3). <span class="mono">HOVER ON</span>=1, <span class="mono">OFF</span>=0</td></tr>
+              <tr><td class="mono">DRILL</td><td>Extract sample (on <span class="mono">S</span>)</td></tr>
+              <tr><td class="mono">PICKUP</td><td>Pick up <span class="mono">S</span>, <span class="mono">★</span>, or battery</td></tr>
+              <tr><td class="mono">DROP n</td><td>Drop inventory item #n on current tile</td></tr>
+              <tr><td class="mono">SOLAR s</td><td>Charge for s seconds (more on ☼)</td></tr>
+              <tr><td class="mono">SCAN</td><td>Reveal nearby fog</td></tr>
+              <tr><td class="mono">MEASURE</td><td>Mark distances along rows/cols (clears on move)</td></tr>
+              <tr><td class="mono">REPEAT k { … }</td><td>Repeat a block k times</td></tr>
+            </tbody>
+          </table>
+          <div class="subtle" style="margin-top:8px;">
+            Movement rules: ramps bridge +1 level in their wedge direction (or the opposite side).
+            Higher climbs require matching <span class="mono">HOVER</span> level. Safe drops up to 2.
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="panel" style="margin:0;">
+          <h3>Legend</h3>
+          <table class="legendTable">
+            <tbody id="legendBody"></tbody>
+          </table>
+          <div class="subtle" style="margin-top:8px;">
+            Height bars: 1–3 thin lines on raised tiles (none on flat).
+            Ramp tiles show a triangular wedge pointing toward higher ground.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
