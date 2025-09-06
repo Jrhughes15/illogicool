@@ -1,44 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Poor-dle</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <title>POOR-DLE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div id="app">
+    <header id="topbar">
+      <h1>POOR-DLE</h1>
+      <div class="btns">
+        <button id="newGameBtn" class="btn">New Game</button>
+        <button id="helpBtn" class="btn" aria-controls="helpBox" aria-expanded="false">Help</button>
+      </div>
+    </header>
 
-<div id="gameContainer">
-    <!-- Container for content to control width -->
-    <div id="contentContainer">
-        <!-- Header container to align items without stretching -->
-        <div id="headerContainer">
-            <h1>POOR-DLE</h1>
-            <div class="button-container">
-                <button id="newGameButton">New Game</button>
-                <button id="helpButton">Help</button>
-            </div>
-        </div>
-        <div id="grid"></div>
-    </div>
-    <div id="inputArea">
-        <input type="text" id="guessInput" maxlength="5" autocomplete="off">
-        <button id="guessButton">Guess</button>
-    </div>
-    <div id="helpSection" class="hidden">
-        <h2>Game Instructions:</h2>
-        <p>Guess a five-letter word within six tries.<br> After each guess, the color of the tiles will change<br> to show how close your guess was to the word. <br> <br>
-        Green: Letter is in the word and in the correct spot.<br>
-        Yellow: Letter is in the word but in the wrong spot.<br>
-        Gray: Letter is not in the word at all.</p><br>
-        <h2>Random Helpful Tips:</h2>
-        <div id="tipsContainer">
-            <!-- Tips will be dynamically added here by JavaScript -->
-        </div>
-    </div>
-</div>
+    <main id="main" role="main" aria-label="Word board and controls">
+      <section id="board" aria-live="polite" aria-label="Guess grid"></section>
 
-<script src="wordList.js"></script>
-<script src="tipsData.js"></script>
-<script src="script.js"></script>
+      <section id="controls">
+        <div id="inputRow">
+          <input id="guessInput" type="text" maxlength="5" inputmode="latin" autocomplete="off" spellcheck="false" aria-label="Type a 5 letter guess" />
+          <button id="guessBtn" class="btn primary">Guess</button>
+        </div>
+
+        <div id="keyboard" aria-label="On screen keyboard">
+          <div class="kb-row" data-row="1"></div>
+          <div class="kb-row" data-row="2"></div>
+          <div class="kb-row" data-row="3"></div>
+        </div>
+      </section>
+
+      <!-- Inline help below the game; no insider text -->
+      <section id="helpBox" hidden>
+        <div class="help-head">
+          <h2>Help</h2>
+        </div>
+        <div class="help-body">
+          <p>Guess the 5 letter word in 6 tries. Colors show letter status.</p>
+          <ul class="legend">
+            <li><span class="cell show correct">A</span> correct spot</li>
+            <li><span class="cell show present">A</span> in word, wrong spot</li>
+            <li><span class="cell show absent">A</span> not in word</li>
+          </ul>
+          <hr />
+          <ol id="tipList" class="tips" aria-live="polite"></ol>
+        </div>
+      </section>
+    </main>
+
+    <footer id="statusBar" aria-live="polite"></footer>
+  </div>
+
+  <!-- Keep your originals exactly -->
+  <script src="wordList.js"></script>
+  <script src="tipsData.js"></script>
+
+  <!-- Game -->
+  <script src="script.js"></script>
 </body>
 </html>
