@@ -1,2 +1,0 @@
-okay a couple things:
-- The side bar is getting cramped and i can no longer see the stats and mini map - can the block builder be on a "top bar" thus moving the control and stats box up on the side bar and then move the mini-map onto the right bottom corner of the playfield  
