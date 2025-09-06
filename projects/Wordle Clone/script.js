@@ -1,180 +1,338 @@
-// Elements from the DOM
-const grid = document.getElementById('grid');
-const guessInput = document.getElementById('guessInput');
-const guessButton = document.getElementById('guessButton');
-const helpButton = document.getElementById('helpButton');
-const newGameButton = document.getElementById('newGameButton');
-const helpSection = document.getElementById('helpSection');
+/* POOR-DLE - inline help; fixes:
+   - No modal; Help section below the board
+   - Prevent double letters when typing in the input
+   - Use your tipsTemplate/wordList even when defined as top-level const (not on window)
+   - Validate guesses against a normalized dictionary
+   - Proper duplicate-letter scoring + on-screen keyboard
+*/
 
-let currentAttempt = 0;
-let answer = "";
+(() => {
+  const ROWS = 6;
+  const COLS = 5;
 
-function initializeGame() {
-    currentAttempt = 0;
-    answer = wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
-    grid.innerHTML = '';
-    for (let i = 0; i < 30; i++) { // Adjust the number based on rows x columns
-        const square = document.createElement('div');
-        square.classList.add('grid-square');
-        grid.appendChild(square);
-    }
-    guessInput.value = '';
-    updateTips();
-    console.log('Game initialized with the word:', answer);
-}
+  // Pull data from your files (support both global bindings and window.*)
+  const WORDS =
+    (typeof wordList !== "undefined" && Array.isArray(wordList)) ? wordList :
+    (typeof window !== "undefined" && Array.isArray(window.wordList)) ? window.wordList : [];
 
-function updateGrid(guess) {
-    const squares = document.querySelectorAll('.grid-square');
-    let start = currentAttempt * 5;  // Start index for the current row in the grid
+  const TIPS =
+    (typeof tipsTemplate !== "undefined" && tipsTemplate) ? tipsTemplate :
+    (typeof window !== "undefined" && window.tipsTemplate) ? window.tipsTemplate : {};
 
-    for (let i = 0; i < 5; i++) {
-        squares[start + i].textContent = guess[i];
-        if (guess[i] === answer[i]) {
-            squares[start + i].classList.add('correct'); // Correct letter in correct position
-        } else if (answer.includes(guess[i])) {
-            squares[start + i].classList.add('present'); // Correct letter in wrong position
-        } else {
-            squares[start + i].classList.add('absent'); // Letter is not in the word at all
-        }
-    }
-    currentAttempt++;
-}
+  // Normalized dictionary (lowercase, exactly 5 letters a–z)
+  const DICT = new Set(WORDS
+    .filter(w => typeof w === "string")
+    .map(w => w.trim().toLowerCase())
+    .filter(w => /^[a-z]{5}$/.test(w)));
 
-async function handleGuess() {
-    let guess = guessInput.value.trim().toUpperCase();
+  // DOM
+  const boardEl = document.getElementById("board");
+  const inputEl = document.getElementById("guessInput");
+  const guessBtn = document.getElementById("guessBtn");
+  const newGameBtn = document.getElementById("newGameBtn");
+  const helpBtn = document.getElementById("helpBtn");
+  const helpBox = document.getElementById("helpBox");
+  const tipList = document.getElementById("tipList");
+  const statusBar = document.getElementById("statusBar");
+  const kbRows = [...document.querySelectorAll(".kb-row")];
 
-    // Validate the length of the guess
-    if (guess.length !== 5) {
-        alert("Guesses must be 5 letters.");
-        return;
-    }
+  // Keyboard layout
+  const KB_ROWS = [
+    "QWERTYUIOP".split(""),
+    "ASDFGHJKL".split(""),
+    ["ENTER", ..."ZXCVBNM".split(""), "⌫"]
+  ];
 
-    // Convert guess to lowercase for validation
-    let guessLowerCase = guess.toLowerCase();
+  // State
+  let answer = "";
+  let rowIndex = 0;
+  let colIndex = 0;
+  let grid = [];
+  let locked = false;
 
-    // Validate if the word is a real word using the Datamuse API
-    const isValidWord = await validateWord(guessLowerCase);
-    if (!isValidWord) {
-        alert("Not a valid word.");
-        return;
-    }
+  // Build UI
+  createBoard();
+  createKeyboard();
+  startNewGame();
 
-    updateGrid(guess);
-    checkGameOver(guess);
-
-    guessInput.value = ''; // Clear the input field
-}
-
-function checkGameOver(guess) {
-    if (guess.toUpperCase() === answer) {
-        // Player guessed correctly
-        highlightAllCorrect(); // Display the correct word
-        setTimeout(() => { 
-            alert("Congratulations! You've guessed the word!");
-            initializeGame(); // Reset the game after the player clicks "OK"
-        }, 500);
-    } else if (currentAttempt >= 6) {
-        // Player used all attempts
-        highlightLastAttempt(guess); // Display the last attempt
-        setTimeout(() => { 
-            alert(`Game over! The word was ${answer}.`);
-            initializeGame(); // Reset the game after the player clicks "OK"
-        }, 500);
-    }
-}
-
-function updateGridWithAnswer(finalWord, attempt) {
-    const squares = document.querySelectorAll('.grid-square');
-    let start = attempt * 5; // Calculate the starting index for the current attempt
-
-    for (let i = 0; i < 5; i++) {
-        squares[start + i].textContent = finalWord[i];
-        squares[start + i].classList.add('correct'); // Add the 'correct' class for styling
-    }
-}
-
-function validateWord(word) {
-    return fetch(`https://api.datamuse.com/words?sp=${word}`)
-        .then(response => response.json())
-        .then(data => data.length > 0)
-        .catch(() => false);
-}
-
-
-function highlightAllCorrect() {
-    const squares = document.querySelectorAll('.grid-square');
-    let start = (currentAttempt >= 6 ? 5 : currentAttempt - 1) * 5;
-
-    for (let i = 0; i < 5; i++) {
-        squares[start + i].textContent = answer[i];
-        squares[start + i].classList.add('correct');
-    }
-}
-
-function highlightLastAttempt(guess) {
-    const squares = document.querySelectorAll('.grid-square');
-    let start = (currentAttempt - 1) * 5; // Start index for the last row
-
-    for (let i = 0; i < 5; i++) {
-        squares[start + i].textContent = guess[i];
-        // Apply appropriate class based on letter correctness
-        if (guess[i] === answer[i]) {
-            squares[start + i].classList.add('correct');
-        } else if (answer.includes(guess[i])) {
-            squares[start + i].classList.add('present');
-        }
-    }
-}
-
-function toggleHelp() {
-    console.log("Help button clicked");
-    if (helpSection.style.display === "none" || helpSection.style.display === "") {
-        helpSection.style.display = "block";
+  // Events
+  newGameBtn.onclick = startNewGame;
+  helpBtn.onclick = () => {
+    const isHidden = helpBox.hasAttribute("hidden");
+    if (isHidden) {
+      renderHelpTips(answer);
+      helpBox.removeAttribute("hidden");
+      helpBtn.setAttribute("aria-expanded", "true");
+      helpBox.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
-        helpSection.style.display = "none";
+      helpBox.setAttribute("hidden", "");
+      helpBtn.setAttribute("aria-expanded", "false");
     }
-}
+  };
+  guessBtn.onclick = submitGuess;
 
-function updateTips() {
-    const tipsContainer = document.getElementById('tipsContainer');
-    tipsContainer.innerHTML = ''; // Clear existing tips
+  // Handle typing in the input (letters go via input, Enter submits)
+  inputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); submitGuess(); }
+  });
+  inputEl.addEventListener("input", syncInputToBoard);
 
-    const usedTips = new Set(); // Keep track of tips that have been used
+  // On-screen keyboard
+  kbRows.forEach(row => {
+    row.addEventListener("click", (e) => {
+      if (locked) return;
+      const keyEl = e.target.closest(".key");
+      if (!keyEl) return;
+      const label = keyEl.dataset.key;
+      if (label === "ENTER") { submitGuess(); return; }
+      if (label === "⌫") { backspace(); return; }
+      if (/^[A-Z]$/.test(label)) typeLetter(label);
+    });
+  });
 
-    for (let i = 0; i < answer.length; i++) {
-        let letter = answer[i];
-        let tipsForLetter = tipsTemplate[letter];
+  // Global keys (ignore when the input is focused to prevent double-typing)
+  window.addEventListener("keydown", (e) => {
+    if (locked) return;
+    const active = document.activeElement;
+    if (active === inputEl) return; // <-- fix double letters
 
-        if (tipsForLetter) {
-            let tipIndex;
-            let tip;
+    if (e.key === "Enter") { submitGuess(); return; }
+    if (e.key === "Backspace") { backspace(); return; }
+    const ch = e.key.toUpperCase();
+    if (/^[A-Z]$/.test(ch)) typeLetter(ch);
+  });
 
-            // Find a tip that hasn't been used yet
-            do {
-                tipIndex = Math.floor(Math.random() * tipsForLetter.length);
-                tip = tipsForLetter[tipIndex];
-            } while (usedTips.has(tip)); // Keep looking if this tip has been used
+  /* ---------- Game ---------- */
 
-            usedTips.add(tip); // Mark this tip as used
+  function startNewGame() {
+    locked = false;
+    rowIndex = 0;
+    colIndex = 0;
+    grid = Array.from({ length: ROWS }, () => Array(COLS).fill(""));
 
-            let tipElement = document.createElement('p');
-            tipElement.textContent = tip;
-            tipsContainer.appendChild(tipElement);
+    answer = pickAnswer();
+    drawBoard();
+    updateStatus("New game. Good luck.");
+    inputEl.value = "";
+    updateKeyboardHints({});
+
+    if (!helpBox.hasAttribute("hidden")) renderHelpTips(answer);
+    focusInputSoon();
+  }
+
+  function pickAnswer() {
+    // Choose any valid 5-letter word from DICT
+    const all = Array.from(DICT);
+    if (all.length === 0) return "ERROR";
+    return all[Math.floor(Math.random() * all.length)].toUpperCase();
+  }
+
+  function createBoard() {
+    boardEl.innerHTML = "";
+    for (let r = 0; r < ROWS; r++) {
+      const row = document.createElement("div");
+      row.className = "row";
+      for (let c = 0; c < COLS; c++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.setAttribute("data-r", r);
+        cell.setAttribute("data-c", c);
+        row.appendChild(cell);
+      }
+      boardEl.appendChild(row);
+    }
+  }
+
+  function drawBoard() {
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const cell = getCell(r, c);
+        const ch = grid[r][c];
+        cell.textContent = ch;
+        cell.classList.toggle("filled", ch !== "");
+        cell.classList.remove("reveal", "correct", "present", "absent");
+      }
+    }
+  }
+
+  function createKeyboard() {
+    kbRows.forEach((rowEl, i) => {
+      rowEl.innerHTML = "";
+      KB_ROWS[i].forEach(key => {
+        const btn = document.createElement("button");
+        btn.className = "key";
+        btn.dataset.key = key;
+        btn.textContent = key;
+        if (key === "ENTER" || key === "⌫") btn.classList.add("wide");
+        rowEl.appendChild(btn);
+      });
+    });
+  }
+
+  function focusInputSoon() { setTimeout(() => inputEl.focus(), 50); }
+  function getCell(r, c) { return boardEl.children[r].children[c]; }
+
+  function typeLetter(ch) {
+    if (colIndex >= COLS || rowIndex >= ROWS) return;
+    grid[rowIndex][colIndex] = ch;
+    colIndex++;
+    updateRowVisual(rowIndex);
+    syncBoardToInput();
+  }
+
+  function backspace() {
+    if (colIndex > 0) {
+      colIndex--;
+      grid[rowIndex][colIndex] = "";
+      updateRowVisual(rowIndex);
+      syncBoardToInput();
+    }
+  }
+
+  function syncInputToBoard() {
+    // Only letters, uppercase, max 5
+    const raw = inputEl.value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, COLS);
+    inputEl.value = raw;
+    for (let c = 0; c < COLS; c++) grid[rowIndex][c] = raw[c] || "";
+    colIndex = raw.length;
+    updateRowVisual(rowIndex);
+  }
+
+  function syncBoardToInput() {
+    inputEl.value = grid[rowIndex].join("");
+  }
+
+  function updateRowVisual(r) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = getCell(r, c);
+      const ch = grid[r][c];
+      cell.textContent = ch;
+      cell.classList.toggle("filled", !!ch);
+    }
+  }
+
+  function submitGuess() {
+    if (locked) return;
+    const guess = grid[rowIndex].join("");
+    if (guess.length < COLS) { updateStatus("Need 5 letters."); return; }
+
+    const g = guess.toLowerCase();
+    if (!DICT.has(g)) {
+      updateStatus("Not in list.");
+      shakeRow(rowIndex);
+      return;
+    }
+
+    const result = scoreGuess(guess, answer);
+    revealRow(rowIndex, result);
+
+    // keyboard hints
+    const best = {};
+    for (let i = 0; i < COLS; i++) {
+      const ch = guess[i];
+      const state = result[i];
+      const rank = state === "correct" ? 3 : state === "present" ? 2 : 1;
+      best[ch] = Math.max(best[ch] || 0, rank);
+    }
+    updateKeyboardHints(best);
+
+    if (guess === answer) {
+      locked = true;
+      updateStatus("You win.");
+      return;
+    }
+    rowIndex++;
+    colIndex = 0;
+    inputEl.value = "";
+    if (rowIndex >= ROWS) {
+      locked = true;
+      updateStatus(`Out of tries. Word was ${answer}.`);
+    } else {
+      updateStatus("Keep going.");
+    }
+  }
+
+  // Two pass scoring for duplicate letters
+  function scoreGuess(guess, ans) {
+    const res = Array(COLS).fill("absent");
+    const counts = {};
+    for (let i = 0; i < COLS; i++) {
+      const a = ans[i];
+      counts[a] = (counts[a] || 0) + 1;
+    }
+    // First pass: exact matches
+    for (let i = 0; i < COLS; i++) {
+      if (guess[i] === ans[i]) {
+        res[i] = "correct";
+        counts[guess[i]]--;
+      }
+    }
+    // Second pass: present letters
+    for (let i = 0; i < COLS; i++) {
+      if (res[i] !== "correct") {
+        const g = guess[i];
+        if ((counts[g] || 0) > 0) {
+          res[i] = "present";
+          counts[g]--;
         }
+      }
     }
-}
+    return res;
+  }
 
-
-// Event listeners
-guessButton.addEventListener('click', handleGuess);
-helpButton.addEventListener('click', toggleHelp);
-newGameButton.addEventListener('click', initializeGame);
-
-window.onload = initializeGame;
-
-guessInput.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        handleGuess();
+  function revealRow(r, states) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = getCell(r, c);
+      cell.classList.add("reveal");
+      cell.classList.remove("correct", "present", "absent");
+      cell.classList.add(states[c]);
     }
-});
+  }
 
+  function updateKeyboardHints(best) {
+    const rankToClass = {1:"absent",2:"present",3:"correct"};
+    kbRows.forEach(row => {
+      [...row.children].forEach(btn => {
+        const k = btn.dataset.key;
+        if (!/^[A-Z]$/.test(k)) return;
+        btn.classList.remove("correct","present","absent");
+        if (best[k]) btn.classList.add(rankToClass[best[k]]);
+      });
+    });
+  }
+
+  function shakeRow(r) {
+    const rowEl = boardEl.children[r];
+    rowEl.animate(
+      [{transform:"translateX(0)"},{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"translateX(0)"}],
+      {duration:180, iterations:2}
+    );
+  }
+
+  function updateStatus(msg) { statusBar.textContent = msg; }
+
+  /* ---------- Tips ---------- */
+
+  // Build one tip per letter of the answer
+  function renderHelpTips(ans) {
+    tipList.innerHTML = "";
+    const letters = ans.toUpperCase().split("");
+    letters.forEach((L, i) => {
+      const bank = Array.isArray(TIPS[L]) ? TIPS[L] : [];
+      const tip = bank.length ? bank[ hash(ans + i) % bank.length ] : (L + "...");
+      const li = document.createElement("li");
+      li.textContent = tip;
+      tipList.appendChild(li);
+    });
+  }
+
+  // Small hash for deterministic picks
+  function hash(s){
+    let h = 2166136261 >>> 0;
+    for (let i=0;i<s.length;i++){
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619) >>> 0;
+    }
+    return h;
+  }
+})();
