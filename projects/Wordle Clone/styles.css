@@ -1,160 +1,143 @@
-:root {
-  --border-color: #d3d3d3; /* This is the grey color used for your grid borders */
+:root{
+  --bg:#0f1115;
+  --panel:#161a22;
+  --ink:#e9eef6;
+  --muted:#a9b2c1;
+  --primary:#5aa8ff;
+  --grid-gap:0.5rem;
 }
 
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    background: #fdfdfd;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  color:var(--ink);
+  background:radial-gradient(1200px 600px at 70% -10%, #1b2030 0%, #0f1115 55%) fixed;
 }
 
-#contentContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 700px; /* Set the max width to match your grid container */
-    margin: 0 auto;
+#app{
+  min-height:100%;
+  display:flex;
+  flex-direction:column;
 }
 
-#headerContainer {
-    width: 100%; /* Let it fill the contentContainer */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    box-sizing: border-box; /* Ensure padding is included in width */
+#topbar{
+  position:sticky; top:0;
+  background:rgba(15,17,21,0.7);
+  -webkit-backdrop-filter:saturate(120%) blur(10px);
+  backdrop-filter:saturate(120%) blur(10px);
+  border-bottom:1px solid #1f2633;
+  padding:0.6rem 1rem;
+  display:flex; align-items:center; justify-content:space-between;
+}
+#topbar h1{ margin:0; font-size:1.2rem; letter-spacing:1px; }
+.btns{display:flex; gap:0.5rem}
+.btn{
+  background:var(--panel);
+  color:var(--ink);
+  border:1px solid #242a38;
+  padding:0.5rem 0.8rem;
+  border-radius:10px;
+  cursor:pointer;
+}
+.btn:hover{border-color:#2f3647}
+.btn.primary{background:#1b3a6b;border-color:#31578f}
+.btn.primary:hover{background:#22457e}
+
+#main{
+  width:100%;
+  margin-inline:auto;
+  padding:1rem;
+  display:grid;
+  grid-template-columns:minmax(260px, 520px);
+  gap:1rem;
+  justify-content:center;
 }
 
-header {
-    width: 100%;
-    max-width: 700px; /* Match the max-width of #contentContainer */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border: 2px solid var(--border-color); /* Use the CSS variable */
-    box-sizing: border-box; /* Include padding and border in the width */
+/* Board */
+#board{ display:grid; gap:var(--grid-gap); }
+.row{
+  display:grid;
+  grid-template-columns:repeat(5, 1fr);
+  gap:var(--grid-gap);
 }
-
-.button-container {
-    display: flex;
-    gap: 5px; /* Adjust the space between buttons */
+.cell{
+  position:relative;
+  width:100%;
+  aspect-ratio:1/1;
+  display:grid; place-items:center;
+  border-radius:10px;
+  border:1px solid #232a3a;
+  background:#0f131b;
+  font-weight:800; font-size:1.6rem;
+  text-transform:uppercase;
 }
+.cell.filled{border-color:#2e3546;background:#121826}
+.cell.reveal{transition:transform .2s ease, background .2s ease, border-color .2s ease}
+.cell.correct{background:linear-gradient(#0f1e16,#0f1a16); border-color:#1f3a2d}
+.cell.present{background:linear-gradient(#1c1a0d,#18160b); border-color:#4a3b18}
+.cell.absent{background:#0f1218; border-color:#2a3142; color:#6f7a8e}
+.cell.show{width:1.6rem; height:1.6rem; aspect-ratio:auto; font-size:1rem}
 
-#newGameButton, #helpButton {
-    margin-left:5px; /* Adds space to the left of the buttons */
+/* Controls */
+#controls{ display:grid; gap:0.8rem; }
+#inputRow{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:0.5rem;
 }
-
-#gameContainer {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 700px;
-    margin: 0 auto;
+#guessInput{
+  width:100%;
+  padding:0.7rem 0.8rem;
+  border-radius:10px;
+  border:1px solid #243049;
+  background:#0e1320; color:var(--ink);
+  font-size:1.1rem; text-transform:uppercase;
 }
+#guessInput:focus{outline:2px solid #284a8a; outline-offset:2px}
+#guessBtn{min-width:96px}
 
-h1 {
-    margin: 0;
-    flex-grow: 1; /* Allow the title to take up available space */
+#keyboard{ display:grid; gap:0.4rem; user-select:none; }
+.kb-row{ display:flex; gap:0.35rem; justify-content:center; flex-wrap:nowrap; }
+.key{
+  background:#111725;
+  border:1px solid #2a3348;
+  border-radius:8px;
+  padding:0.6rem 0.45rem;
+  min-width:32px; text-align:center;
+  font-weight:600; cursor:pointer;
 }
+.key.wide{min-width:64px}
+.key.correct{background:#1c3a2b;border-color:#325e49}
+.key.present{background:#3a341c;border-color:#6b5c29}
+.key.absent{background:#171b26;border-color:#2b3243;color:#73809a}
 
-#grid {
-    max-width: 700px;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 5px;
-    margin-bottom: 10px;
+#statusBar{ padding:0.6rem 1rem; text-align:center; color:var(--muted); }
+
+/* Inline help box */
+#helpBox{
+  border:1px solid #21293b;
+  background:#0e1320;
+  border-radius:14px;
+  overflow:hidden;
 }
+#helpBox[hidden]{display:none}
+.help-head{padding:0.8rem 1rem; border-bottom:1px solid #21293b; background:#0c111c}
+.help-head h2{margin:0; font-size:1rem}
+.help-body{padding:1rem}
+.legend{display:flex; gap:0.8rem; padding:0; list-style:none; align-items:center}
+.legend li{display:flex; gap:0.5rem; align-items:center}
+.tips{margin:0.8rem 0 0.2rem 1.2rem; padding:0; display:grid; gap:0.4rem}
+.muted{color:var(--muted); font-size:0.95rem}
 
-.grid-square {
-    width: 60px;
-    height: 60px;
-    background: #fff;
-    border: 2px solid #d3d3d3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2em;
-    color: #333;
+/* Tight screens */
+@media (max-height: 700px){
+  #main{padding:0.6rem}
+  .cell{font-size:1.35rem}
 }
-
-#inputArea {
-    margin-top: 20px;
-}
-
-#guessInput {
-    padding: 10px;
-    font-size: 1em;
-    margin-right: 10px;
-}
-
-#guessButton, #helpButton, #newGameButton {
-    padding: 10px 10px;
-    background: #333;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
-
-#helpSection {
-    margin-top: 20px; /* Add some space between the grid and help section */
-    width: 100%; /* Full width of the game container */
-    max-width: 700px; /* Match the max width of the grid */
-    padding: 5px;
-    border: 1px solid #d3d3d3;
-    background: #f7f7f7;
-    text-align: center; /* Center-align the text */
-    box-sizing: border-box; /* Include padding in the width calculation */
-}
-
-#helpSection h2 {
-    margin-top: 5px; /* Reduced top margin */
-    margin-bottom: 5px; /* Reduced bottom margin */
-}
-
-#helpSection p {
-    margin-bottom: 5px; /* Adjusted bottom margin for paragraphs */
-    line-height: 1.2; /* Adjust line height as needed */
-}
-
-.hidden {
-    display: none;
-}
-
-
-.color-example {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 1px solid #d3d3d3;
-    margin-right: 5px;
-    justify-content: center;
-}
-
-/* Color classes for correct and present letters */
-.correct {
-    background: #6aaa64;
-    border-color: #6aaa64;
-}
-
-.present {
-    background: #c9b458;
-    border-color: #c9b458;
-}
-
-.absent {
-    background: #d3d3d3;
-}
-
-@media (max-width: 720px) {
-    header, #grid, #helpSection {
-        padding: 0 10px; /* Adjust padding for all content on small screens */
-    }
+@media (max-width: 420px){
+  #topbar h1{font-size:1rem}
+  .cell{border-radius:8px}
+  #guessBtn{padding:0.5rem}
 }
