@@ -2,36 +2,55 @@
 
 const projects = [
   {
-    id: "wall-bounce",
-    title: "Wall Bounce Composer",
-    summary: "Infinite playfield wall-bounce toy with music notes.",
-    tags: ["game", "music", "physics"],
-    demo: "projects/wall-bounce/index.html",
-    repo: "https://github.com/yourname/wall-bounce",
-    stars: 42,
-    date: "2025-09-01"
+    id: "wordle-clone",
+    title: "Wordle Clone",
+    summary: "Re-creation of Wordle in vanilla JS with custom tips and word list.",
+    tags: ["game", "puzzle"],
+    demo: "projects/Wordle Clone/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Wordle%20Clone",
+    stars: 0,
+    date: "2025-09-06"
+  },
+  {
+    id: "type-quest",
+    title: "Type Quest",
+    summary: "Typing adventure with progress tracking.",
+    tags: ["game", "typing"],
+    demo: "projects/Type Quest/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Type%20Quest",
+    stars: 0,
+    date: "2025-09-06"
   },
   {
     id: "lagrover",
     title: "LagRover",
-    summary: "Grid rover with command lag and objectives.",
-    tags: ["game", "puzzle", "grid"],
-    demo: "projects/lagrover/index.html",
-    repo: "https://github.com/yourname/lagrover",
-    stars: 55,
-    date: "2025-08-18"
+    summary: "Rover puzzle with delayed command queue.",
+    tags: ["game", "puzzle"],
+    demo: "projects/LagRover/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/LagRover",
+    stars: 0,
+    date: "2025-09-06"
   },
   {
-    id: "story-diagrammer",
-    title: "Story Diagrammer",
-    summary: "Infinite canvas for story nodes with connectors.",
-    tags: ["tool", "canvas", "writing"],
-    demo: "projects/story-diagrammer/index.html",
-    repo: "https://github.com/yourname/story-diagrammer",
-    stars: 31,
-    date: "2025-07-12"
+    id: "infinite-wall-bouncer",
+    title: "Infinite Wall Bouncer",
+    summary: "Ball physics toy with placeable deflectors.",
+    tags: ["toy", "physics"],
+    demo: "projects/Infinite Wall Bouncer/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Infinite%20Wall%20Bouncer",
+    stars: 0,
+    date: "2025-09-06"
+  },
+  {
+    id: "core-supervisor",
+    title: "Core Supervisor",
+    summary: "CRT style containment sim.",
+    tags: ["sim", "management"],
+    demo: "projects/Core Supervisor/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Core%20Supervisor",
+    stars: 0,
+    date: "2025-09-06"
   }
-  // Add more entries as needed
 ];
 
 const el = {
@@ -92,7 +111,7 @@ function render(){
       <p>${escapeHtml(p.summary)}</p>
       <div class="tags">${p.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>
       <div class="row">
-        <a class="btn" href="#" data-demo="${encodeURIComponent(p.demo)}" data-title="${escapeHtml(p.title)}">Live demo</a>
+        <a class="btn" href="#" data-demo="${escapeHtml(p.demo)}" data-title="${escapeHtml(p.title)}">Live demo</a>
         <a class="btn ghost" href="${p.repo}" target="_blank" rel="noopener">Code</a>
       </div>
     `;
@@ -112,7 +131,8 @@ function escapeHtml(s){
 
 function openDemo(title, url){
   el.modalTitle.textContent = title;
-  el.modalFrame.src = url;
+  // Encode the path since your folders have spaces
+  el.modalFrame.src = encodeURI(url);
   el.modal.setAttribute("aria-hidden", "false");
 }
 
@@ -149,7 +169,6 @@ el.themeBtn.addEventListener("click", () => {
 render();
 
 /* Notes
-- Place each project demo at projects/<id>/index.html so the iframe loads it.
-- If a project needs a different path or external URL, set demo to that URL.
-- If you want thumbnails, add an <img> before the title or use CSS backgrounds.
+- encodeURI is used for iframe src so folder names with spaces work.
+- If you ever rename to kebab-case folders, you can drop encodeURI.
 */
