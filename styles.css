@@ -91,6 +91,34 @@ h1{ font-size: clamp(28px, 3.6vw, 44px); margin: 0 0 8px; }
 .card .row{ gap: .5rem; }
 .card .btn{ flex: 1; text-align: center; }
 
+/* Preview panel */
+.preview{ padding: 12px 0 24px; }
+.preview-shell{
+  background: #0f141b;
+  border: 1px solid #1f2a3a;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.preview-bar{
+  padding: 10px;
+  background: #101724;
+  border-bottom: 1px solid #203046;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+}
+.preview-title{ font-weight: 700; }
+.preview-actions{ display: flex; gap: .5rem; }
+#previewFrame{
+  width: 100%;
+  height: min(78vh, 900px);
+  border: 0;
+  background: #0a0f14;
+}
+
+/* Footer and sections */
 .site-footer{
   border-top: 1px solid #1d2631;
   padding: 18px 0;
@@ -101,32 +129,6 @@ h1{ font-size: clamp(28px, 3.6vw, 44px); margin: 0 0 8px; }
 
 .about, .contact{ padding: 30px 0; }
 .about h2, .contact h2{ margin-top: 0; }
-
-.modal{
-  position: fixed; inset: 0; display: none; z-index: 50;
-}
-.modal[aria-hidden="false"]{ display: block; }
-.modal-backdrop{
-  position: absolute; inset: 0; background: rgba(0,0,0,0.6);
-}
-.modal-dialog{
-  position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  width: min(1000px, 92%); height: min(80vh, 720px);
-  background: #0f141b; border: 1px solid #1f2a3a; border-radius: 14px;
-  padding: 14px; box-shadow: var(--shadow);
-  display: flex; flex-direction: column;
-}
-.modal-close{
-  align-self: flex-end; border: 1px solid #2a3c58;
-  background: #121b29; color: var(--text);
-  border-radius: 10px; padding: 6px 10px; cursor: pointer;
-}
-.modal h3{ margin: 0 0 10px; }
-.modal iframe{
-  flex: 1; width: 100%; border: none;
-  background: #0a0f14; border-radius: 10px;
-}
 
 /* Light theme */
 .light{
@@ -146,3 +148,5 @@ h1{ font-size: clamp(28px, 3.6vw, 44px); margin: 0 0 8px; }
 .light .btn{ background: #f4f7fb; border-color: #d7e0ee; color: #111419; }
 .light .btn.ghost{ background: transparent; }
 .light .tag{ background: #eef3fb; border-color: #d7e0ee; color: #1b2b42; }
+.light .preview-shell{ background: #ffffff; border-color: #e8edf5; }
+.light .preview-bar{ background: #f7f9fc; border-color: #e1e9f6; }
