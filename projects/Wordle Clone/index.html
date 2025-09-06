@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Poor-dle</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="gameContainer">
+    <!-- Container for content to control width -->
+    <div id="contentContainer">
+        <!-- Header container to align items without stretching -->
+        <div id="headerContainer">
+            <h1>POOR-DLE</h1>
+            <div class="button-container">
+                <button id="newGameButton">New Game</button>
+                <button id="helpButton">Help</button>
+            </div>
+        </div>
+        <div id="grid"></div>
+    </div>
+    <div id="inputArea">
+        <input type="text" id="guessInput" maxlength="5" autocomplete="off">
+        <button id="guessButton">Guess</button>
+    </div>
+    <div id="helpSection" class="hidden">
+        <h2>Game Instructions:</h2>
+        <p>Guess a five-letter word within six tries.<br> After each guess, the color of the tiles will change<br> to show how close your guess was to the word. <br> <br>
+        Green: Letter is in the word and in the correct spot.<br>
+        Yellow: Letter is in the word but in the wrong spot.<br>
+        Gray: Letter is not in the word at all.</p><br>
+        <h2>Random Helpful Tips:</h2>
+        <div id="tipsContainer">
+            <!-- Tips will be dynamically added here by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<script src="wordList.js"></script>
+<script src="tipsData.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

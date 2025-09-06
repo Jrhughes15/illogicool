@@ -1,0 +1,30 @@
+{
+  "camera": { "x": 300, "y": 0, "scale": 1, "min": 0.4, "max": 3 },
+  "settings": {
+    "g": 1200,
+    "restitution": 0.92,
+    "wave": "sine",
+    "vol": 0.3,
+    "instrument": "pure",
+    "bpm": 120,
+    "followBall": true,
+    "showPath": true
+  },
+  "start": { "x": 520, "y": 140, "vx": 500, "vy": 0 },
+  "ball":  { "x": 520, "y": 140, "vx": 500, "vy": 0, "r": 12 },
+  "blocks": [
+    { "x": 700,  "y": 220,  "w": 140, "h": 24, "angle": -0.60, "midi": 67, "noteDiv": 0.25 },  
+    { "x": 900,  "y": 300,  "w": 140, "h": 24, "angle":  0.90, "midi": 67, "noteDiv": 0.25 },  
+    { "x": 1100, "y": 380,  "w": 140, "h": 24, "angle": -0.60, "midi": 69, "noteDiv": 0.25 }, 
+    { "x": 1300, "y": 460,  "w": 140, "h": 24, "angle":  0.90, "midi": 67, "noteDiv": 0.25 }, 
+    { "x": 1500, "y": 540,  "w": 140, "h": 24, "angle": -0.60, "midi": 72, "noteDiv": 0.25 }, 
+    { "x": 1700, "y": 620,  "w": 140, "h": 24, "angle":  0.90, "midi": 71, "noteDiv": 0.50 },  
+
+    { "x": 1900, "y": 700,  "w": 140, "h": 24, "angle": -0.60, "midi": 67, "noteDiv": 0.25 },  
+    { "x": 2100, "y": 780,  "w": 140, "h": 24, "angle":  0.90, "midi": 67, "noteDiv": 0.25 },  
+    { "x": 2300, "y": 860,  "w": 140, "h": 24, "angle": -0.60, "midi": 69, "noteDiv": 0.25 },  
+    { "x": 2500, "y": 940,  "w": 140, "h": 24, "angle":  0.90, "midi": 67, "noteDiv": 0.25 },  
+    { "x": 2700, "y": 1020, "w": 140, "h": 24, "angle": -0.60, "midi": 74, "noteDiv": 0.25 }, 
+    { "x": 2900, "y": 1100, "w": 140, "h": 24, "angle":  0.90, "midi": 72, "noteDiv": 0.50 }   
+  ]
+}

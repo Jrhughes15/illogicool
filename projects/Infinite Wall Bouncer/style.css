@@ -1,0 +1,146 @@
+:root{
+  --bg:#f6f7f9;
+  --ink:#101317;
+  --muted:#5a6b7b;
+  --stroke:#c9d2dc;
+  --accent:#1976d2;
+  --panel:#ffffff;
+  --danger:#c0392b;
+  --ok:#0b6;
+}
+
+*{box-sizing:border-box}
+html,body{
+  height:100%;
+  margin:0;
+  color:var(--ink);
+  font:14px/1.2 ui-sans-serif,system-ui,Segoe UI,Roboto,Arial;
+  background:var(--bg);
+}
+
+/* ----- Sidebar ----- */
+#side{
+  position:fixed; left:14px; top:14px; bottom:14px; width:300px;
+  display:flex; flex-direction:column; gap:14px; z-index:2;
+  overflow:auto; padding-right:2px;
+}
+.card{
+  background:var(--panel);
+  border:1px solid var(--stroke);
+  border-radius:10px; padding:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
+}
+.cardTitle{
+  margin:0 0 8px; font-size:13px; font-weight:700; color:#2a3a4b; letter-spacing:.2px;
+}
+.noteRow{ display:flex; align-items:center; gap:8px; margin:6px 0; }
+.noteRow label{ width:95px; color:var(--muted) }
+.buttons{ display:flex; gap:10px; margin:6px 0; flex-wrap:wrap }
+
+button{
+  border:1px solid var(--stroke);
+  background:#0f5e7a; color:#fff;
+  padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600;
+}
+button:hover{ filter:brightness(1.05) }
+button#drop{ background:var(--ok); }
+button#reset{ background:#e06b00; }
+button.danger{ background:var(--danger); }
+button.subtle{
+  background:#eef2f5; color:#1f2a36; border-color:#d6dde5;
+}
+button.subtle:disabled{
+  opacity:.5; cursor:not-allowed;
+}
+button:disabled{
+  opacity:.6; cursor:not-allowed;
+}
+
+select, input[type="range"]{ accent-color: var(--accent); }
+.muted{ color:var(--muted); }
+.small{ font-size:12px; }
+
+.toggles{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:6px 0;
+}
+.toggle{
+  display:flex; align-items:center; gap:6px; background:#f0f4f8;
+  border:1px solid var(--stroke); padding:6px 8px; border-radius:8px;
+}
+.toggle input[type="checkbox"]{ accent-color:var(--accent); }
+
+.stats .stat{
+  display:flex; justify-content:space-between; margin:4px 0;
+}
+
+/* ----- Playfield container ----- */
+#stageWrap{
+  position:fixed; left:330px; top:14px; right:14px; bottom:14px;
+  border:2px solid #000; background:#fff; overflow:hidden;
+}
+
+/* Main canvas fills container */
+#stage{ width:100%; height:100%; display:block; background:#fff; }
+
+/* ----- Top builder bar ----- */
+#topBar{
+  position:absolute; left:10px; right:10px; top:10px; z-index:3;
+  display:flex; align-items:center; gap:12px;
+  padding:10px 12px;
+  backdrop-filter:saturate(1.1) blur(2px);
+}
+#topBar .tb-title{
+  font-weight:700; color:#2a3a4b; margin-right:10px;
+}
+#topBar .tb-left, #topBar .tb-right{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+}
+#topBar .tb-mid{
+  flex:1 1 auto; display:flex; justify-content:center; min-width:220px;
+}
+#topBar .tb-field{ display:flex; align-items:center; gap:6px; }
+#preview{
+  display:block; width:100%; max-width:340px; height:auto;
+  border:1px dashed #aab7c6; background:#fff;
+}
+
+/* ----- Mini-map overlay ----- */
+#miniDock{
+  position:absolute; right:10px; bottom:10px; width:240px; z-index:3;
+  padding:8px;
+}
+#mini{
+  display:block; width:100%; height:140px;
+  border:1px solid #900; background:#fff;
+}
+.miniTitle{ margin-bottom:6px; }
+
+/* Visual cue while dragging a new block */
+#stageWrap.dragging::after{
+  content:"";
+  position:absolute; inset:0; pointer-events:none;
+  outline:2px dashed #58a6ff; outline-offset:-6px;
+}
+
+/* Helpful micro-styles */
+.help{ margin-top:6px; }
+#bpmOut{ color:#2a3a4b; min-width:60px; text-align:right; }
+#angleOut, #speedOut{ color:#2a3a4b; min-width:40px; text-align:right; }
+
+/* Gray-out when a control is inactive for the current instrument */
+.inactive{
+  opacity:.55;
+  pointer-events:none;
+}
+
+/* Form controls comfy */
+select, input[type="range"]{
+  font:inherit;
+}
+select{
+  padding:6px 8px;
+  border:1px solid var(--stroke);
+  border-radius:8px;
+  background:#fff;
+  color:var(--ink);
+}

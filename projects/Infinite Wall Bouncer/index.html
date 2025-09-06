@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Wall Bounce Composer — Infinite Playfield</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Sidebar: Controls + Stats -->
+  <div id="side">
+    <!-- Simulation controls -->
+    <div class="controls card">
+      <h2 class="cardTitle">Controls</h2>
+
+      <div class="buttons">
+        <button id="drop">DROP</button>
+        <button id="reset">Reset</button>
+        <button id="setStart" title="Remember current ball position and direction">Set Start</button>
+      </div>
+
+      <div class="toggles">
+        <label class="toggle">
+          <input type="checkbox" id="followBall" checked />
+          <span>Follow ball</span>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="showPath" checked />
+          <span>Show last path</span>
+        </label>
+        <button id="clearPath" class="subtle" title="Clear saved path" disabled>Clear path</button>
+      </div>
+
+      <div class="noteRow">
+        <label>Instrument</label>
+        <select id="instrumentSel" aria-label="Instrument">
+          <option value="pure">Pure</option>
+          <option value="bell">Bell</option>
+          <option value="chime">Chime</option>
+          <option value="organ">Organ</option>
+          <option value="pluck">Pluck</option>
+          <option value="dualsaw">DualSaw</option>
+        </select>
+      </div>
+
+      <div class="noteRow">
+        <label>Wave</label>
+        <select id="waveSel" aria-label="Wave">
+          <option value="sine">sine</option>
+          <option value="triangle">triangle</option>
+          <option value="square">square</option>
+          <option value="sawtooth">sawtooth</option>
+        </select>
+        <span id="waveNote" class="muted small">Used by Pure & DualSaw</span>
+      </div>
+
+      <div class="noteRow">
+        <label>Volume</label>
+        <input id="vol" type="range" min="0" max="1" step="0.01" value="0.30" />
+      </div>
+
+      <div class="noteRow">
+        <label>Tempo</label>
+        <input id="bpm" type="range" min="40" max="200" step="1" value="120" />
+        <span id="bpmOut">120 BPM</span>
+      </div>
+
+      <div class="noteRow">
+        <label>Gravity</label>
+        <input id="gravity" type="range" min="200" max="2000" step="10" value="1200" />
+      </div>
+
+      <div class="noteRow">
+        <label>Bounce</label>
+        <input id="restitution" type="range" min="0.4" max="1" step="0.01" value="0.92" />
+      </div>
+
+      <div class="noteRow">
+        <label>Angle</label>
+        <input id="dirAngle" type="range" min="-180" max="180" step="1" value="0" />
+        <span id="angleOut">0°</span>
+      </div>
+
+      <div class="noteRow">
+        <label>Speed</label>
+        <input id="dirSpeed" type="range" min="0" max="1000" step="10" value="400" />
+        <span id="speedOut">400</span>
+      </div>
+
+      <div class="buttons">
+        <button id="zoomOut" title="Zoom out">−</button>
+        <button id="zoomReset" title="Reset zoom">100%</button>
+        <button id="zoomIn" title="Zoom in">+</button>
+      </div>
+
+      <div class="buttons">
+        <button id="importBtn">Import</button>
+        <button id="exportBtn">Export</button>
+        <input id="fileInput" type="file" accept="application/json" hidden />
+      </div>
+
+      <div class="help small">
+        Pan: Right-drag or hold Space and drag. Wheel: zoom. Q/E rotate selected block.
+        Click/drag in the mini-map to move the camera. Drag the ball (when stopped) to set start; use the blue ring to set direction.
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats card">
+      <h2 class="cardTitle">Stats (this run)</h2>
+      <div class="stat"><span>Run</span><strong id="sRun">0</strong></div>
+      <div class="stat"><span>Bounces</span><strong id="sBounces">0</strong></div>
+      <div class="stat"><span>Blocks</span><strong id="sBlocks">0</strong></div>
+      <div class="stat"><span>Start Pos</span><strong id="sStartPos">0,0</strong></div>
+      <div class="stat"><span>Start Dir</span><strong id="sStartDir">0° @ 0</strong></div>
+    </div>
+  </div>
+
+  <!-- Playfield -->
+  <div id="stageWrap">
+    <!-- Sticky Builder Top Bar -->
+    <div id="topBar" class="card">
+      <div class="tb-left">
+        <div class="tb-title">Block Builder</div>
+
+        <div class="tb-field">
+          <label>Note</label>
+          <select id="noteLetter" aria-label="Note letter">
+            <option>C</option><option>C#</option><option>D</option><option>D#</option>
+            <option>E</option><option>F</option><option>F#</option><option>G</option>
+            <option>G#</option><option>A</option><option>A#</option><option>B</option>
+          </select>
+          <select id="noteOctave" aria-label="Note octave">
+            <option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option>
+          </select>
+        </div>
+
+        <div class="tb-field">
+          <label>Note length</label>
+          <select id="noteLength" aria-label="Note length">
+            <option value="1" selected>Whole</option>
+            <option value="0.5">Half</option>
+            <option value="0.25">Quarter</option>
+            <option value="0.125">Eighth</option>
+            <option value="0.0625">Sixteenth</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="tb-mid">
+        <canvas id="preview" width="260" height="54" title="Drag from here onto the playfield"></canvas>
+      </div>
+
+      <div class="tb-right">
+        <button id="spawn">Spawn Block</button>
+        <button id="cloneSel" title="Clone selected block (C)">Clone</button>
+        <button id="delSel" class="danger" title="Delete selected block (Del)">Delete</button>
+      </div>
+    </div>
+
+    <!-- Main canvas -->
+    <canvas id="stage"></canvas>
+
+    <!-- Mini-map overlay -->
+    <div id="miniDock" class="card">
+      <div class="miniTitle small muted">Mini-map</div>
+      <canvas id="mini"></canvas>
+    </div>
+  </div>
+
+  <!-- JS will be sent in the next message -->
+  <script src="script.js"></script>
+</body>
+</html>

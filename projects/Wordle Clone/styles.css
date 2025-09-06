@@ -1,0 +1,160 @@
+:root {
+  --border-color: #d3d3d3; /* This is the grey color used for your grid borders */
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: #fdfdfd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#contentContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 700px; /* Set the max width to match your grid container */
+    margin: 0 auto;
+}
+
+#headerContainer {
+    width: 100%; /* Let it fill the contentContainer */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box; /* Ensure padding is included in width */
+}
+
+header {
+    width: 100%;
+    max-width: 700px; /* Match the max-width of #contentContainer */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 2px solid var(--border-color); /* Use the CSS variable */
+    box-sizing: border-box; /* Include padding and border in the width */
+}
+
+.button-container {
+    display: flex;
+    gap: 5px; /* Adjust the space between buttons */
+}
+
+#newGameButton, #helpButton {
+    margin-left:5px; /* Adds space to the left of the buttons */
+}
+
+#gameContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+h1 {
+    margin: 0;
+    flex-grow: 1; /* Allow the title to take up available space */
+}
+
+#grid {
+    max-width: 700px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.grid-square {
+    width: 60px;
+    height: 60px;
+    background: #fff;
+    border: 2px solid #d3d3d3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    color: #333;
+}
+
+#inputArea {
+    margin-top: 20px;
+}
+
+#guessInput {
+    padding: 10px;
+    font-size: 1em;
+    margin-right: 10px;
+}
+
+#guessButton, #helpButton, #newGameButton {
+    padding: 10px 10px;
+    background: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+#helpSection {
+    margin-top: 20px; /* Add some space between the grid and help section */
+    width: 100%; /* Full width of the game container */
+    max-width: 700px; /* Match the max width of the grid */
+    padding: 5px;
+    border: 1px solid #d3d3d3;
+    background: #f7f7f7;
+    text-align: center; /* Center-align the text */
+    box-sizing: border-box; /* Include padding in the width calculation */
+}
+
+#helpSection h2 {
+    margin-top: 5px; /* Reduced top margin */
+    margin-bottom: 5px; /* Reduced bottom margin */
+}
+
+#helpSection p {
+    margin-bottom: 5px; /* Adjusted bottom margin for paragraphs */
+    line-height: 1.2; /* Adjust line height as needed */
+}
+
+.hidden {
+    display: none;
+}
+
+
+.color-example {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #d3d3d3;
+    margin-right: 5px;
+    justify-content: center;
+}
+
+/* Color classes for correct and present letters */
+.correct {
+    background: #6aaa64;
+    border-color: #6aaa64;
+}
+
+.present {
+    background: #c9b458;
+    border-color: #c9b458;
+}
+
+.absent {
+    background: #d3d3d3;
+}
+
+@media (max-width: 720px) {
+    header, #grid, #helpSection {
+        padding: 0 10px; /* Adjust padding for all content on small screens */
+    }
+}

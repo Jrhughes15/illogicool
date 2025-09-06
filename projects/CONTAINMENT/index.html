@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Containment: Core Supervisor</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button id="btnMainMenu" class="btn">Main Menu</button>
+      <button id="btnStory" class="btn">Start Story</button>
+
+      <div id="arcadeTopControls" class="arcade-top" hidden>
+        <button id="btnArcade" class="btn btn-ghost">Arcade</button>
+        <select id="arcadeSelectTop" class="select"></select>
+        <button id="topArcadeStart" class="btn">Start</button>
+      </div>
+
+      <button id="btnManual" class="btn">Manual</button>
+    </div>
+
+    <div class="topbar-right">
+      <button id="btnPause" class="btn">Pause</button>
+      <button id="btnReset" class="btn">Reset Run</button>
+      <button id="btnMute" class="btn btn-ghost">Mute</button>
+      <button id="btnExport" class="btn btn-ghost">Export</button>
+      <label class="file-btn">
+        Import
+        <input id="fileImport" type="file" accept="application/json" />
+      </label>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <main class="layout">
+    <!-- Left: CRT + Gauges -->
+    <section class="left-col">
+      <div class="card crt">
+        <pre id="crt" class="crt-pre"></pre>
+      </div>
+
+      <div class="gheader">
+        <button id="gPrev" class="btn btn-ghost sm">&lt; Prev</button>
+        <div class="gtitle">
+          <span id="gaugeTitle">CORE TRACE</span>
+          <span class="gsep">• Safe</span>
+          <span id="gaugeSafe">42–58</span>
+          <span class="gstatus" id="gaugeAlarm">Clear</span>
+        </div>
+        <button id="gNext" class="btn btn-ghost sm">Next &gt;</button>
+      </div>
+
+      <div id="gaugeStrip" class="gstrip"></div>
+    </section>
+
+    <!-- Right: Controls + COMMS -->
+    <aside class="right-col">
+      <!-- Controls -->
+      <div class="card" id="controlsCard">
+        <h2 class="card-title">
+          Containment Controls — <span id="ctrlGaugeName">CORE</span>
+        </h2>
+
+        <!-- Containment Power -->
+        <div class="ctrl-row">
+          <div class="ctrl-head">
+            <label for="sContain">Containment Power</label>
+            <span class="ctrl-desc" title="Feeds the dampening lattice. High values stabilize energy but drain reserve faster.">
+              stability vs reserve
+            </span>
+          </div>
+          <div class="slider-wrap">
+            <input type="range" id="sContain" min="0" max="100" value="58" />
+            <span id="bContain" class="slider-badge">58</span>
+          </div>
+        </div>
+
+        <!-- Coolant Flow -->
+        <div class="ctrl-row">
+          <div class="ctrl-head">
+            <label for="sCoolant">Coolant Flow</label>
+            <span class="ctrl-desc" title="Pulls energy toward baseline. Too high can quench output and cause dips.">
+              pulls to baseline
+            </span>
+          </div>
+          <div class="slider-wrap">
+            <input type="range" id="sCoolant" min="0" max="100" value="52" />
+            <span id="bCoolant" class="slider-badge">52</span>
+          </div>
+        </div>
+
+        <!-- Magnetic Field -->
+        <div class="ctrl-row">
+          <div class="ctrl-head">
+            <label for="sField">Magnetic Field</label>
+            <span class="ctrl-desc" title="Reduces volatility near mid. Very high values can raise the baseline.">
+              damps mid / raises base
+            </span>
+          </div>
+          <div class="slider-wrap">
+            <input type="range" id="sField" min="0" max="100" value="58" />
+            <span id="bField" class="slider-badge">58</span>
+          </div>
+        </div>
+
+        <!-- Phase Shifter -->
+        <div class="ctrl-row">
+          <div class="ctrl-head">
+            <label for="sPhase">Phase Shifter</label>
+            <span class="ctrl-desc" title="Match the active gauge’s target for smooth oscillations.">
+              match target phase
+            </span>
+          </div>
+          <div class="slider-wrap">
+            <input type="range" id="sPhase" min="0" max="100" value="52" />
+            <span id="bPhase" class="slider-badge">52</span>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="ctrl-buttons">
+          <button id="btnPurge" class="btn">Vent Purge</button>
+          <button id="btnRods" class="btn">Buffer Rods</button>
+          <button id="btnAux" class="btn btn-accent">Aux Banks</button>
+        </div>
+
+        <p class="ctrl-help">
+          Purge drops energy fast with a cooldown. Rods add a short dampening burst.
+          Aux Banks injects reserve power (cooldown) and briefly adds grid instability.
+        </p>
+      </div>
+
+      <!-- COMMS -->
+      <div class="card" id="commsCard">
+        <h2 class="card-title">COMMS</h2>
+
+        <div id="commsActive" class="comms-active" hidden>
+          <div class="comms-q">
+            <span id="commsQuestion">Chief: ...</span>
+            <span class="timer" id="commTimer">10</span>
+          </div>
+
+          <div id="commsCtlYN" class="comms-yn">
+            <button id="btnCommYes" class="btn">Yes</button>
+            <button id="btnCommNo" class="btn">No</button>
+          </div>
+
+          <div id="commsCtlCode" class="comms-code" hidden>
+            <input id="commCodeInput" class="input" placeholder="Enter code…" />
+            <button id="btnCommSubmit" class="btn">Submit</button>
+          </div>
+        </div>
+
+        <div id="commsLog" class="comms-log"></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Main Menu Overlay -->
+  <section id="overlayMenu" class="overlay">
+    <article class="overlay-card">
+      <h1 class="overlay-title">HELIOS — Core Supervisor</h1>
+      <div class="overlay-body">
+        <p>Keep every active gauge within safe bounds. Prevent meltdown. Produce clean power.</p>
+        <div class="overlay-actions">
+          <button id="menuStartStory" class="btn">Start Story</button>
+          <button id="menuOpenArcade" class="btn">Arcade</button>
+          <button id="menuOpenManual" class="btn btn-ghost">Open Manual</button>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- End-of-Run Overlay -->
+  <section id="overlayEnd" class="overlay">
+    <article class="overlay-card">
+      <h1 id="endTitle" class="overlay-title">Containment Achieved</h1>
+      <pre id="endBody" class="overlay-pre"></pre>
+      <div class="overlay-actions">
+        <button id="btnNextLevel" class="btn">Next Level</button>
+        <button id="btnRetry" class="btn">Retry</button>
+        <button id="btnEndSave" class="btn btn-ghost">Save</button>
+        <button id="btnEndExport" class="btn btn-ghost">Export</button>
+        <button id="btnToMenu" class="btn">Main Menu</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- Manual (dialog) -->
+  <dialog id="dlgManual" class="manual">
+    <article>
+      <header class="manual-head">
+        <h2>Operations Manual</h2>
+        <button id="btnCloseManual" class="btn btn-ghost sm">Close ✕</button>
+      </header>
+
+      <nav class="tabs">
+        <button class="tab-btn active" data-tab="tab-systems">Systems</button>
+        <button class="tab-btn" data-tab="tab-situations">Situations</button>
+        <button class="tab-btn" data-tab="tab-codes">Codes</button>
+      </nav>
+
+      <section id="tab-systems" class="tab-panel active">
+        <h3>Systems Overview</h3>
+        <ul class="systems-list">
+          <li><strong>Containment Power</strong> — Stabilizes energy, drains reserves faster.</li>
+          <li><strong>Coolant Flow</strong> — Pulls toward baseline; too high can quench.</li>
+          <li><strong>Magnetic Field</strong> — Damps mid; very high raises baseline.</li>
+          <li><strong>Phase Shifter</strong> — Match target phase for smooth oscillations.</li>
+        </ul>
+
+        <h3>Save Data</h3>
+        <div class="save-tools">
+          <button id="btnManualExport" class="btn btn-ghost">Export Save</button>
+          <label class="file-btn">
+            Import Save
+            <input id="fileImportManual" type="file" accept="application/json" />
+          </label>
+          <button id="btnManualWipe" class="btn btn-ghost">Wipe Save</button>
+          <div class="save-meta">
+            <div>Story Unlocked: <span id="manualProg">1</span></div>
+            <div>Autosave: <span id="manualAutosave">On</span></div>
+          </div>
+        </div>
+
+        <h3>Best Scores</h3>
+        <table class="table">
+          <thead><tr><th>Level</th><th>Best</th></tr></thead>
+          <tbody id="bestScoresBody"></tbody>
+        </table>
+      </section>
+
+      <section id="tab-situations" class="tab-panel">
+        <h3>Situations</h3>
+        <table class="table">
+          <thead>
+            <tr><th>Card</th><th>Telltale</th><th>Action</th><th>SOP</th></tr>
+          </thead>
+          <tbody id="manualSituations"></tbody>
+        </table>
+
+        <h3>Standard Operating Procedures (SOP)</h3>
+        <table class="table">
+          <thead>
+            <tr><th>Procedure</th><th>Rule</th><th>Examples</th></tr>
+          </thead>
+          <tbody id="manualSOPs"></tbody>
+        </table>
+      </section>
+
+      <section id="tab-codes" class="tab-panel">
+        <nav class="codes-nav">
+          <button class="codes-btn active" data-codes="codes-vents">Vents</button>
+          <button class="codes-btn" data-codes="codes-injectors">Injectors</button>
+          <button class="codes-btn" data-codes="codes-coolant">Coolant</button>
+          <button class="codes-btn" data-codes="codes-field">Field</button>
+          <button class="codes-btn" data-codes="codes-emergency">Emergency</button>
+        </nav>
+
+        <div class="codes-panels">
+          <div id="codes-vents" class="codes-panel active">
+            <table class="table">
+              <thead><tr><th>Topic</th><th>Code</th><th>Notes</th></tr></thead>
+              <tbody id="manualCodesVents"></tbody>
+            </table>
+          </div>
+          <div id="codes-injectors" class="codes-panel">
+            <table class="table">
+              <thead><tr><th>Topic</th><th>Code</th><th>Notes</th></tr></thead>
+              <tbody id="manualCodesInjectors"></tbody>
+            </table>
+          </div>
+          <div id="codes-coolant" class="codes-panel">
+            <table class="table">
+              <thead><tr><th>Topic</th><th>Code</th><th>Notes</th></tr></thead>
+              <tbody id="manualCodesCoolant"></tbody>
+            </table>
+          </div>
+          <div id="codes-field" class="codes-panel">
+            <table class="table">
+              <thead><tr><th>Topic</th><th>Code</th><th>Notes</th></tr></thead>
+              <tbody id="manualCodesField"></tbody>
+            </table>
+          </div>
+          <div id="codes-emergency" class="codes-panel">
+            <table class="table">
+              <thead><tr><th>Topic</th><th>Code</th><th>Notes</th></tr></thead>
+              <tbody id="manualCodesEmergency"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </article>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>

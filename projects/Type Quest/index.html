@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Type Quest - Learn Typing Fast</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Type Quest</h1>
+    <p class="tagline">Practice mode for drills. Arcade mode for action. Directions mode for finger memory. Stats to track progress.</p>
+  </header>
+
+  <main class="app-main">
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="practice">Practice</button>
+      <button class="tab-btn" data-tab="arcade">Arcade</button>
+      <button class="tab-btn" data-tab="directions">Directions</button>
+      <button class="tab-btn" data-tab="stats">Stats</button>
+      <button class="tab-btn" data-tab="help">Help</button>
+    </nav>
+
+    <!-- PRACTICE MODE -->
+    <section class="tab-panel active" id="practice">
+      <div class="controls">
+        <div class="control-group">
+          <label>Lesson</label>
+          <select id="practice-lesson">
+            <option value="home">Home row (a s d f j k l ;)</option>
+            <option value="top">Top row (q w e r t y u i o p)</option>
+            <option value="bottom">Bottom row (z x c v b n m)</option>
+            <option value="mix">Mix common letters</option>
+            <option value="words_short">Short words</option>
+            <option value="words_common">Common words</option>
+            <option value="sentences">Quick sentences</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label>Target length</label>
+          <input type="range" id="practice-length" min="20" max="140" step="10" value="60" />
+          <span id="practice-length-label">60</span> chars
+        </div>
+
+        <div class="control-group">
+          <label>Show keyboard hints</label>
+          <label class="switch">
+            <input type="checkbox" id="practice-hints" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="control-group">
+          <label>Show finger colors</label>
+          <label class="switch">
+            <input type="checkbox" id="practice-fingers" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="control-group">
+          <button id="practice-new" class="accent">New drill</button>
+          <button id="practice-reset">Reset stats</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div><strong>WPM:</strong> <span id="practice-wpm">0</span></div>
+        <div><strong>Accuracy:</strong> <span id="practice-acc">100%</span></div>
+        <div><strong>Streak:</strong> <span id="practice-streak">0</span></div>
+        <div><strong>Time:</strong> <span id="practice-time">0s</span></div>
+      </div>
+
+      <div class="drill">
+        <div id="drill-text" class="drill-text" aria-label="Type the characters shown"></div>
+        <input id="hidden-input" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" />
+        <p class="hint">Click the drill or press Enter to focus. Start typing.</p>
+      </div>
+
+      <div class="keyboard-wrap">
+        <div class="keyboard show-fingers" id="keyboard-practice" aria-hidden="true"></div>
+        <div class="finger-legend" id="legend-practice" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- ARCADE MODE -->
+    <section class="tab-panel" id="arcade">
+      <div class="controls">
+        <div class="control-group">
+          <label>Difficulty</label>
+          <select id="arcade-difficulty">
+            <option value="easy">Easy</option>
+            <option value="normal" selected>Normal</option>
+            <option value="hard">Hard</option>
+            <option value="insane">Insane</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label>Target type</label>
+          <select id="arcade-target-type">
+            <option value="letters" selected>Letters</option>
+            <option value="words">Words</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label>Lesson filter</label>
+          <select id="arcade-lesson-filter">
+            <option value="none" selected>None</option>
+            <option value="home">Home row</option>
+            <option value="top">Top row</option>
+            <option value="bottom">Bottom row</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label>Show keyboard hints</label>
+          <label class="switch">
+            <input type="checkbox" id="arcade-hints" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="control-group">
+          <label>Show finger colors</label>
+          <label class="switch">
+            <input type="checkbox" id="arcade-fingers" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="control-group">
+          <button id="arcade-start" class="accent">Start</button>
+          <button id="arcade-pause">Pause</button>
+          <button id="arcade-reset">Reset</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div><strong>Score:</strong> <span id="arcade-score">0</span></div>
+        <div><strong>Lives:</strong> <span id="arcade-lives">3</span></div>
+        <div><strong>WPM:</strong> <span id="arcade-wpm">0</span></div>
+        <div><strong>Accuracy:</strong> <span id="arcade-acc">100%</span></div>
+        <div><strong>Time:</strong> <span id="arcade-time">0s</span></div>
+      </div>
+
+      <div class="playfield-wrap">
+        <div id="playfield" class="playfield" aria-label="Arcade playfield"></div>
+      </div>
+
+      <div class="keyboard-wrap">
+        <div class="keyboard show-fingers" id="keyboard-arcade" aria-hidden="true"></div>
+        <div class="finger-legend" id="legend-arcade" aria-hidden="true"></div>
+      </div>
+
+      <div id="arcade-overlay" class="overlay hidden" role="dialog" aria-live="assertive">
+        <div class="overlay-card">
+          <h2 id="overlay-title">Paused</h2>
+          <p id="overlay-sub">Press any key or click Start</p>
+          <button id="overlay-close" class="accent">Resume</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIRECTIONS MODE -->
+    <section class="tab-panel" id="directions">
+      <div class="controls">
+        <div class="control-group">
+          <label>Finger</label>
+          <select id="dir-finger">
+            <option value="lp">Left Pinky (LP)</option>
+            <option value="lr">Left Ring (LR)</option>
+            <option value="lm">Left Middle (LM)</option>
+            <option value="li" selected>Left Index (LI)</option>
+            <option value="ri">Right Index (RI)</option>
+            <option value="rm">Right Middle (RM)</option>
+            <option value="rr">Right Ring (RR)</option>
+            <option value="rp">Right Pinky (RP)</option>
+            <option value="th">Thumbs</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label>Include numbers and symbols</label>
+          <label class="switch">
+            <input type="checkbox" id="dir-include-symbols" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="control-group">
+          <label>Show letter hint</label>
+          <label class="switch">
+            <input type="checkbox" id="dir-show-letter" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="control-group">
+          <label>Show finger colors</label>
+          <label class="switch">
+            <input type="checkbox" id="dir-fingers" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="control-group">
+          <label>Prompts</label>
+          <input type="range" id="dir-length" min="8" max="60" step="4" value="24" />
+          <span id="dir-length-label">24</span>
+        </div>
+
+        <div class="control-group">
+          <button id="dir-new" class="accent">New set</button>
+          <button id="dir-reset">Reset stats</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div><strong>WPM:</strong> <span id="dir-wpm">0</span></div>
+        <div><strong>Accuracy:</strong> <span id="dir-acc">100%</span></div>
+        <div><strong>Streak:</strong> <span id="dir-streak">0</span></div>
+        <div><strong>Time:</strong> <span id="dir-time">0s</span></div>
+      </div>
+
+      <div class="drill dir-drill">
+        <div id="dir-tokens" class="dir-tokens" aria-label="Follow the direction prompts"></div>
+        <input id="hidden-input-dir" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" />
+        <p class="hint">Type the key that matches the finger and arrow. Example: LI ↑ = R or T. Press Enter to focus.</p>
+        <p class="hint small">Note: on ANSI keyboards the left pinky reaches the backquote key (`) above Tab. Not the single quote key.</p>
+      </div>
+
+      <div class="keyboard-wrap">
+        <div class="keyboard show-fingers" id="keyboard-directions" aria-hidden="true"></div>
+        <div class="finger-legend" id="legend-directions" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="tab-panel" id="stats">
+      <div class="controls">
+        <div class="control-group">
+          <label>Profile</label>
+          <input id="profile-name" placeholder="Your name (local only)" />
+          <div class="btn-row">
+            <button id="profile-save" class="accent">Save profile</button>
+          </div>
+          <p class="muted small">Saved locally in this browser. No account required.</p>
+        </div>
+
+        <div class="control-group">
+          <label>Data Management</label>
+          <div class="btn-row">
+            <button id="export-data" class="accent">Export JSON</button>
+            <button id="import-data">Import JSON</button>
+            <input id="import-file" type="file" accept="application/json" class="upload-hidden" />
+            <button id="reset-data">Reset all data</button>
+          </div>
+          <p class="muted small">Export to back up or move to another device. Import to restore.</p>
+        </div>
+
+        <div class="control-group">
+          <label>Recommendations</label>
+          <p id="recommendation-text" class="muted">Do a few sessions and I’ll suggest what to practice next.</p>
+          <div class="btn-row">
+            <button id="start-recommended" class="accent">Start recommended practice</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-cards">
+        <div class="kpi-card">
+          <div class="kpi-title">Total time</div>
+          <div id="kpi-time" class="kpi-value">0m</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Chars typed</div>
+          <div id="kpi-chars" class="kpi-value">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Best WPM</div>
+          <div id="kpi-best-wpm" class="kpi-value">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Avg accuracy</div>
+          <div id="kpi-avg-acc" class="kpi-value">0%</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>By finger</h3>
+        <div id="finger-stats" class="finger-table"><!-- filled by JS --></div>
+      </div>
+
+      <div class="panel">
+        <h3>Recent sessions</h3>
+        <div id="recent-sessions" class="data-table"><!-- filled by JS --></div>
+      </div>
+    </section>
+
+    <!-- HELP -->
+    <section class="tab-panel" id="help">
+      <div class="help">
+        <h2>Touch typing guide</h2>
+        <p>Keep index fingers on F and J. The bumps on those keys help you reset without looking.</p>
+        <ul>
+          <li>Left hand: pinky covers ` 1 Q A Z and modifiers. Ring covers 2 W S X. Middle covers 3 E D C. Index covers 4 5 R T F G V B.</li>
+          <li>Right hand: index covers 6 7 Y U H J N M. Middle covers 8 I K , Ring covers 9 O L . Pinky covers 0 - = P [ ] \ ; ' / and Enter, Backspace, Shift.</li>
+          <li>Thumbs: Space.</li>
+        </ul>
+        <p>Turn on finger colors to see these zones on the keyboard.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>Made for quick progress and real practice. Have fun.</span>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
