@@ -57,11 +57,15 @@ const el = {
   grid: document.getElementById("projectsGrid"),
   search: document.getElementById("search"),
   sort: document.getElementById("sort"),
-  modal: document.getElementById("demoModal"),
-  modalTitle: document.getElementById("demoTitle"),
-  modalFrame: document.getElementById("demoFrame"),
-  themeBtn: document.getElementById("btnTheme"),
-  year: document.getElementById("year")
+  year: document.getElementById("year"),
+  // preview bits
+  previewSection: document.getElementById("livePreview"),
+  previewTitle: document.getElementById("previewTitle"),
+  previewFrame: document.getElementById("previewFrame"),
+  btnOpenNew: document.getElementById("btnOpenNew"),
+  btnClosePreview: document.getElementById("btnClosePreview"),
+  btnFullscreen: document.getElementById("btnFullscreen"),
+  themeBtn: document.getElementById("btnTheme")
 };
 
 el.year.textContent = new Date().getFullYear().toString();
@@ -106,19 +110,19 @@ function render(){
   for (const p of list){
     const card = document.createElement("article");
     card.className = "card";
+    const encodedDemo = encodeURI(p.demo); // spaces-safe
     card.innerHTML = `
       <h3>${escapeHtml(p.title)}</h3>
       <p>${escapeHtml(p.summary)}</p>
       <div class="tags">${p.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>
       <div class="row">
-        <a class="btn" href="#" data-demo="${escapeHtml(p.demo)}" data-title="${escapeHtml(p.title)}">Live demo</a>
-        <a class="btn ghost" href="${p.repo}" target="_blank" rel="noopener">Code</a>
+        <button class="btn" data-preview="${encodedDemo}" data-title="${escapeHtml(p.title)}">Preview</button>
+        <a class="btn ghost" href="${encodedDemo}" target="_blank" rel="noopener">Open full</a>
       </div>
     `;
-    card.querySelector('[data-demo]').addEventListener('click', e => {
-      e.preventDefault();
-      openDemo(p.title, p.demo);
-    });
+    // wire preview
+    const btn = card.querySelector("[data-preview]");
+    btn.addEventListener("click", () => openPreview(p.title, encodedDemo));
     el.grid.appendChild(card);
   }
 }
@@ -129,23 +133,31 @@ function escapeHtml(s){
   }[m]));
 }
 
-function openDemo(title, url){
-  el.modalTitle.textContent = title;
-  // Encode the path since your folders have spaces
-  el.modalFrame.src = encodeURI(url);
-  el.modal.setAttribute("aria-hidden", "false");
+/* Preview handling */
+function openPreview(title, url){
+  el.previewTitle.textContent = title;
+  el.previewFrame.src = url;
+  el.btnOpenNew.href = url;
+  el.previewSection.hidden = false;
+
+  // scroll to preview
+  const y = el.previewSection.getBoundingClientRect().top + window.scrollY - 12;
+  window.scrollTo({ top: y, behavior: "smooth" });
 }
 
-function closeDemo(){
-  el.modal.setAttribute("aria-hidden", "true");
-  el.modalFrame.src = "about:blank";
+function closePreview(){
+  el.previewFrame.src = "about:blank";
+  el.previewSection.hidden = true;
 }
 
-// Event wiring
-document.addEventListener("click", e => {
-  if (e.target.matches("[data-close]")) closeDemo();
-});
+function fullscreenPreview(){
+  const iframe = el.previewFrame;
+  if (iframe.requestFullscreen) iframe.requestFullscreen();
+  else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+  // if not supported, do nothing silently
+}
 
+/* Events */
 el.search.addEventListener("input", () => {
   state.query = el.search.value.trim();
   render();
@@ -155,6 +167,9 @@ el.sort.addEventListener("change", () => {
   state.sort = el.sort.value;
   render();
 });
+
+el.btnClosePreview.addEventListener("click", closePreview);
+el.btnFullscreen.addEventListener("click", fullscreenPreview);
 
 // Theme
 el.themeBtn.addEventListener("click", () => {
@@ -169,6 +184,8 @@ el.themeBtn.addEventListener("click", () => {
 render();
 
 /* Notes
-- encodeURI is used for iframe src so folder names with spaces work.
-- If you ever rename to kebab-case folders, you can drop encodeURI.
+- Each card now has Preview and Open full.
+- Preview opens a large on-page iframe with Fullscreen and Close.
+- Open full uses target=_blank so you get the true app in a new tab.
+- encodeURI is used for paths that contain spaces.
 */
