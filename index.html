@@ -29,12 +29,7 @@
     <section class="hero">
       <div class="container">
         <h1>Web games, tools, and odd little experiments</h1>
-        <p class="lead">
-      I’m Jimmy — a director at KENS5 in San Antonio and a maker who loves building creative projects. 
-      I split my time between <strong>broadcast production</strong>, where I run live shows and design smarter newsroom tools, 
-      and <strong>personal projects</strong>, where I code games, build web apps, and experiment with CNC and digital art. 
-      Whether it’s a puzzle game, a story tool, or a handmade project in the shop, I enjoy turning ideas into real, playable, usable things.
-        </p>
+        <p class="lead">Director • Maker • Game Dev • Builder of useful and playful things</p>
         <div class="filters row">
           <input id="search" class="input" type="search" placeholder="Search projects or tags" />
           <select id="sort" class="input">
@@ -42,6 +37,25 @@
             <option value="alpha">A to Z</option>
             <option value="popular">Most stars</option>
           </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live preview panel -->
+    <section id="livePreview" class="preview" hidden>
+      <div class="container">
+        <div class="preview-shell">
+          <div class="preview-bar">
+            <div class="preview-title">
+              <span id="previewTitle">Preview</span>
+            </div>
+            <div class="preview-actions">
+              <a id="btnOpenNew" class="btn ghost" href="#" target="_blank" rel="noopener">Open full</a>
+              <button id="btnFullscreen" class="btn">Fullscreen</button>
+              <button id="btnClosePreview" class="btn">Close</button>
+            </div>
+          </div>
+          <iframe id="previewFrame" title="Live project preview" loading="lazy"></iframe>
         </div>
       </div>
     </section>
@@ -56,7 +70,10 @@
       <div class="container">
         <h2>About</h2>
         <p>
-          I make small web games and utilities. Everything here is static and easy to host.
+          I’m Jimmy — a director at KENS-5 in San Antonio and a maker who loves building creative projects.
+          I split my time between <strong>broadcast production</strong>, where I run live shows and design smarter newsroom tools,
+          and <strong>personal projects</strong>, where I code games, build web apps, and experiment with CNC and digital art.
+          I enjoy turning ideas into real, playable, usable things.
         </p>
       </div>
     </section>
@@ -65,8 +82,7 @@
       <div class="container">
         <h2>Contact</h2>
         <p>
-          Reach me at
-          <a href="mailto:hello@illogicool.com">hello@illogicool.com</a>
+          Reach me at <a href="mailto:hello@illogicool.com">hello@illogicool.com</a>
         </p>
       </div>
     </section>
@@ -80,16 +96,6 @@
       </div>
     </div>
   </footer>
-
-  <!-- Modal for live demo -->
-  <div id="demoModal" class="modal" aria-hidden="true">
-    <div class="modal-backdrop" data-close></div>
-    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="demoTitle">
-      <button class="modal-close" title="Close" data-close>×</button>
-      <h3 id="demoTitle"></h3>
-      <iframe id="demoFrame" title="Live demo" loading="lazy"></iframe>
-    </div>
-  </div>
 
   <script src="app.js"></script>
 </body>
