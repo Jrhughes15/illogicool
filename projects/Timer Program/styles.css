@@ -1,0 +1,726 @@
+/* -------------------------------------------------------------- */
+/* General Styles */
+/* -------------------------------------------------------------- */
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+#container {
+    background-color: white;
+    width: 85%;
+    max-width: 600px;
+    min-width: 300px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.6em;
+    margin-bottom: 10px;
+}
+
+hr {
+    width: 100%;
+    border: 1px solid #333;
+    margin: 10px 0;
+}
+
+
+/* -------------------------------------------------------------- */
+/* Date and Time Section */
+/* -------------------------------------------------------------- */
+
+
+#date-time {
+    margin: 10px 0;
+}
+
+
+#current-date {
+    font-size: 1.5em;
+    margin: 5px 0;
+    text-align: center;
+}
+
+#current-time {
+    font-size: 2.1em;
+    margin: 5px 0;
+    text-align: center;
+    font-weight: bolder;
+}
+
+
+.calendar-icon {
+    font-size: .9em;
+    cursor: pointer;
+    margin-left: 10px;
+    color: #333;
+    transition: color 0.3s;
+}
+
+.calendar-icon:hover {
+    color: #555;
+}
+
+/* Calendar Navigation */
+.calendar-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px; /* Space between elements */
+}
+
+.nav-btn {
+    padding: 5px 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.nav-btn:hover {
+    background-color: #555;
+}
+
+/* Highlight Current Day */
+.calendar .current-day {
+    background-color: #333;
+    color: white;
+    border-radius: 10%;
+    font-weight: bold;
+}
+
+/* Return to Current Month Button */
+.return-btn {
+    margin-top: 20px;
+    padding: 10px 15px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.return-btn:hover {
+    background-color: #555;
+}
+
+.month-year-display {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    padding: 0 10px; /* Add space around the text */
+}
+
+/* -------------------------------------------------------------- */
+/* Calander Modal */
+/* -------------------------------------------------------------- */
+
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.calendar {
+    margin: 20px auto;
+    text-align: center;
+}
+
+.calendar table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendar th, .calendar td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.modal-action-btn {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.calendar-header {
+    font-weight: bold;
+    text-align: center;
+    padding: 5px;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days */
+}
+
+.calendar-cell {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.calendar-cell.empty {
+    background-color: #f9f9f9;
+}
+
+.current-day {
+    background-color: #333;
+    color: white;
+    font-weight: bold;
+}
+
+.modal-action-btn:hover {
+    background-color: #555;
+}
+
+
+/* -------------------------------------------------------------- */
+/* Stopwatch Section */
+/* -------------------------------------------------------------- */
+
+
+.stopwatch {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.stopwatch-display {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.stopwatch-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+}
+
+.stopwatch-buttons .btn {
+    flex: 1 1 24%;
+    margin: 2px;
+    padding: 15px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.stopwatch-buttons .btn:hover {
+    background-color: #555;
+}
+
+
+/* -------------------------------------------------------------- */
+/* Timer Creation Section */
+/* -------------------------------------------------------------- */
+
+
+#timer-creation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;       
+    justify-content: center;    
+    text-align: center;
+    height: 100%;               
+    width: 100%;                
+}
+
+#timer-name, #timer-input {
+    padding: 12px;
+    font-size: 1.3em;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    max-width: 300px;
+    margin-bottom: 10px;
+}
+
+#number-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 500px;
+    margin: 10px auto;
+}
+
+#number-pad button {
+    padding: 15px;
+    font-size: 1.5em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+#number-pad button:hover {
+    background-color: #555;
+}
+
+.timer-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+/* Special Buttons (Backspace, Clear) */
+#number-pad .special-button {
+    background-color: #444;
+}
+
+#number-pad .special-button:hover {
+    background-color: #666;
+}
+
+/* Action Buttons (Start, Add) */
+#number-pad .action-button {
+    background-color: #222;
+    font-weight: bold;
+}
+
+#number-pad .action-button:hover {
+    background-color: #444;
+}
+
+#start-timer-btn, #add-timer-btn {
+    padding: 15px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    transition: background-color 0.3s;
+    flex: 1;
+    max-width: 120px; /* Dynamic scaling */
+    min-width: 80px;  /* Ensure usability */
+}
+
+#start-timer-btn:hover, #add-timer-btn:hover {
+    background-color: #555;
+}
+
+.timer-buttons button:not(:last-child) {
+    margin-right: 0; /* Adjust spacing */
+}
+
+
+/* -------------------------------------------------------------- */
+/* Added Timers Section */
+/* -------------------------------------------------------------- */
+
+
+#added-timers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.timer-button-container {
+    display: flex;
+    align-items: stretch;
+    height: 40px;
+}
+
+.timer-btn {
+    padding: 0 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border: none;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #333;
+    color: white;
+    min-width: 80px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.delete-btn {
+    padding: 0 10px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.timer-btn:hover {
+    background-color: #555;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+
+/* -------------------------------------------------------------- */
+/* Preset Timer Section */
+/* -------------------------------------------------------------- */
+
+
+#premade-timers {
+    margin-top: 20px;
+}
+
+.preset-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    transition: background-color 0.3s;
+    margin-bottom: 10px;
+}
+
+.preset-btn:hover {
+    background-color: #555;
+}
+
+.preset-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: 8px 0;
+    padding: 5px;
+}
+
+.preset-grid button {
+    width: 22%;
+    padding: 8px 5px;
+    font-size: 1em;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    line-height: 1.2;
+    white-space: pre-wrap;
+    text-align: center;
+    max-width: 120px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.preset-grid button:hover {
+    background-color: #666;
+}
+
+
+/* -------------------------------------------------------------- */
+/* Active Timers Section */
+/* -------------------------------------------------------------- */
+
+
+#active-timers {
+    margin-top: 20px;
+}
+
+.timer-card {
+    background-color: #f8f8f8;
+    padding: 20px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.timer-card h3 {
+    font-size: 1.8em;
+    margin-bottom: 5px;
+}
+
+.timer-card p {
+    font-size: 1.2em;
+}
+
+.timer-card .countdown {
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0;
+}
+
+.timer-card .timer-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.timer-card button {
+    padding: 10px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 4px;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    flex: 1;
+    margin: 0 5px;
+}
+
+.timer-card button:hover {
+    background-color: #555;
+}
+
+
+/* -------------------------------------------------------------- */
+/* Color Indicators for Countdown */
+/* -------------------------------------------------------------- */
+
+
+.timer-card.green { background-color: #dff0d8; }
+.timer-card.blue { background-color: #d9edf7; }
+.timer-card.orange { background-color: #fcf8e3; }
+.timer-card.red { background-color: #f2dede; }
+
+
+/* -------------------------------------------------------------- */
+/* Modal Styling */
+/* -------------------------------------------------------------- */
+
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 375px;
+    min-width: 375px;
+    gap: 10px; 
+}
+
+.modal-content h3 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+.modal-label {
+    display: block;
+    font-size: 1.2em;
+    text-align: center;
+    margin-bottom: 5px;
+    color: #333; 
+}
+
+.modal-input {
+    width: 90%; 
+    padding: 12px;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.modal-content button {
+    margin: 10px 5px;
+    padding: 10px 15px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.modal-content button:hover {
+    background-color: #555;
+}
+
+/* Grid-style buttons for modals */
+.modal-buttons {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    gap: 5px; /* Reduced gap between buttons */
+}
+
+/* For custom modals: 2x2 grid */
+.modal-buttons.custom {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 0px; /* Less space between rows */
+}
+
+/* For preset modals: 1-row grid */
+.modal-buttons.preset {
+    grid-template-columns: 1fr 1fr;
+}
+
+.modal-action-btn {
+    padding: 15px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    transition: background-color 0.3s;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-action-btn {
+    padding: 15px;
+    width: 100%; 
+    font-size: 1.2em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    transition: background-color 0.3s;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-action-btn:hover {
+    background-color: #555;
+}
+
+
+/* -------------------------------------------------------------- */
+/* Responsive Adjustments */
+/* -------------------------------------------------------------- */
+
+.modal-select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.modal-result {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
+
+
+/* -------------------------------------------------------------- */
+/* Responsive Adjustments */
+/* -------------------------------------------------------------- */
+
+
+@media (max-width: 600px) {
+    #timer-creation {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    #number-pad button {
+        padding: 15px;
+        font-size: 1.2em;
+    }
+
+    #start-timer-btn, #add-timer-btn {
+        padding: 10px;
+        font-size: 1em;
+        width: 45%;
+    }
+
+    .modal-content {
+        max-width: 95%;
+    }
+
+    .modal-input {
+        font-size: 1em; 
+    }
+
+    .modal-content button {
+        width: 100%;
+        margin: 10px 0;
+    }
+}

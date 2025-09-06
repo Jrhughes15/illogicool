@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="container">
+        <header>
+            <h1>Time Manager</h1>
+            <hr>
+        </header>
+
+<!----------- Current Date and Time Display ----------->
+<div id="date-time">
+    <p id="current-date">
+        <span id="day-name"></span> - <span id="month-name"></span>
+        <br> <!-- Line break -->
+        <span id="date-formatted"></span>
+        <span class="calendar-icon" onclick="openCalendarModal()">𝄜</span>
+    </p>
+    <p id="current-time"></p>
+</div>
+<hr>
+
+<!----------- Stopwatch 1 Section ----------->
+        <div class="stopwatch">
+            <div class="stopwatch-display" id="stopwatch1-display">00:00:00</div>
+            <div class="stopwatch-buttons">
+                <button class="btn" onclick="startStopwatch('stopwatch1')">Start</button>
+                <button class="btn" onclick="stopStopwatch('stopwatch1')">Stop</button>
+            </div>
+	    <div class="stopwatch-buttons">
+                <button class="btn" onclick="restartStopwatch('stopwatch1')">Restart</button>
+                <button class="btn" onclick="resetStopwatch('stopwatch1')">Reset</button>
+            </div>
+        </div>
+        <hr>
+
+<!----------- Stopwatch 2 Section ----------->
+        <div class="stopwatch">
+            <div class="stopwatch-display" id="stopwatch2-display">00:00:00</div>
+            <div class="stopwatch-buttons">
+                <button class="btn" onclick="startStopwatch('stopwatch2')">Start</button>
+                <button class="btn" onclick="stopStopwatch('stopwatch2')">Stop</button>
+            </div>
+	    <div class="stopwatch-buttons">
+                <button class="btn" onclick="restartStopwatch('stopwatch2')">Restart</button>
+                <button class="btn" onclick="resetStopwatch('stopwatch2')">Reset</button>
+            </div>
+        </div>
+        <hr>
+
+<!----------- Timer Creation Section ----------->
+        <div id="timer-creation">
+            <input type="text" id="timer-name" placeholder="Timer Name">
+            <input type="text" id="timer-input" placeholder="Enter Time">
+           <div id="number-pad">
+    <button onclick="appendDigit(1)">1</button>
+    <button onclick="appendDigit(2)">2</button>
+    <button onclick="appendDigit(3)">3</button>
+    <button onclick="appendDigit(4)">4</button>
+    <button onclick="appendDigit(5)">5</button>
+    <button onclick="appendDigit(6)">6</button>
+    <button onclick="appendDigit(7)">7</button>
+    <button onclick="appendDigit(8)">8</button>
+    <button onclick="appendDigit(9)">9</button>
+    <button class="special-button" onclick="backspaceTimerInput()">←</button>
+    <button onclick="appendDigit(0)">0</button>
+    <button class="special-button" onclick="clearTimerInput()">C</button>
+    <button class="action-button" onclick="startTimer()">Start</button>
+    <button onclick="appendDoubleZero()">00</button>
+    <button class="action-button" onclick="addTimer()">Add</button>
+</div>
+        </div>
+        <hr id="added-timers-line" style="display: none;"> <!-- Initially hidden -->
+
+        <!-- Added Timers Section -->
+        <div id="added-timers"></div>
+        <hr>
+
+<!----------- Preset Timers Section ----------->
+        <div id="premade-timers">
+            <button class="preset-btn" onclick="togglePreset('weekday')">Weekday Show Presets</button>
+            <div id="weekday-presets" class="preset-grid" style="display: none;">
+                <button onclick="startPresetTimer('AM Show Start', '4:30:00 AM')">AM Show<br>Start</button>
+                <button onclick="startPresetTimer('AM Show End', '6:56:57 AM')">AM Show<br>End</button>
+                <button onclick="startPresetTimer('GDSA Start', '9:00:00 AM')">GDSA<br>Start</button>
+                <button onclick="startPresetTimer('GDSA End', '9:58:26 AM')">GDSA<br>End</button>
+                <button onclick="startPresetTimer('Noon Start', '11:58:41 AM')">Noon<br>Start</button>
+                <button onclick="startPresetTimer('Noon End', '12:27:22 PM')">Noon<br>End</button>
+                <button onclick="startPresetTimer('4 PM Start', '4:00:00 PM')">4 PM<br>Start</button>
+                <button onclick="startPresetTimer('4 PM End', '4:26:00 PM')">4 PM<br>End</button>
+                <button onclick="startPresetTimer('5 PM Start', '5:00:00 PM')">5 PM<br>Start</button>
+                <button onclick="startPresetTimer('5 PM End', '5:27:02 PM')">5 PM<br>End</button>
+                <button onclick="startPresetTimer('6 PM Start', '6:00:00 PM')">6 PM<br>Start</button>
+                <button onclick="startPresetTimer('6 PM End', '6:25:41 PM')">6 PM<br>End</button>
+                <button onclick="startPresetTimer('10 PM Start', '10:00:00 PM')">10 PM<br>Start</button>
+                <button onclick="startPresetTimer('10 PM End', '10:26:00 PM')">10 PM<br>End</button>
+            </div>
+            <button class="preset-btn" onclick="togglePreset('saturday')">Saturday Show Presets</button>
+            <div id="saturday-presets" class="preset-grid" style="display: none;">
+                <button onclick="startPresetTimer('SAT AM Start', '7:58:55 AM')">SAT AM<br>Start</button>
+                <button onclick="startPresetTimer('SAT AM End', '9:57:27 AM')">SAT AM<br>End</button>
+                <button onclick="startPresetTimer('5 PM Start Saturday', '5:00:00 PM')">5 PM<br>Start</button>
+                <button onclick="startPresetTimer('5 PM End Saturday', '5:29:51 PM')">5 PM<br>End</button>
+                <button onclick="startPresetTimer('6 PM Start Saturday', '6:00:00 PM')">6 PM<br>Start</button>
+                <button onclick="startPresetTimer('6 PM End Saturday', '6:25:50 PM')">6 PM<br>End</button>
+                <button onclick="startPresetTimer('10 PM Start Saturday', '10:00:00 PM')">10 PM<br>Start</button>
+                <button onclick="startPresetTimer('10 PM End Saturday', '10:55:30 PM')">10 PM<br>End</button>
+            </div>
+            <button class="preset-btn" onclick="togglePreset('sunday')">Sunday Show Presets</button>
+            <div id="sunday-presets" class="preset-grid" style="display: none;">
+                <button onclick="startPresetTimer('Sun AM Start', '7:00:00 AM')">Sun AM<br>Start</button>
+                <button onclick="startPresetTimer('Sun AM End', '7:57:51 AM')">Sun AM<br>End</button>
+                <button onclick="startPresetTimer('5:30 PM Start Sunday', '5:30:00 PM')">5:30 PM<br>Start</button>
+                <button onclick="startPresetTimer('5:30 PM End Sunday', '5:56:21 PM')">5:30 PM<br>End</button>
+                <button onclick="startPresetTimer('10 PM Start Sunday', '10:00:00 PM')">10 PM<br>Start</button>
+                <button onclick="startPresetTimer('10 PM End Sunday', '10:00:00 PM')">10 PM<br>End</button>
+            </div>
+
+<!----------- Calculation Time Section ----------->
+            <div>
+            <hr>
+            <button onclick="openTimeDifferenceModal()" class="modal-action-btn">
+    Time Between Timers
+            </button>
+            </div>
+
+        </div>
+        <hr>
+
+<!----------- Active Timers Section ----------->
+        <div id="active-timers"></div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
