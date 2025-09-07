@@ -107,6 +107,7 @@ body{
   padding:0.6rem 0.45rem;
   min-width:32px; text-align:center;
   font-weight:600; cursor:pointer;
+  color: lightgray;
 }
 .key.wide{min-width:64px}
 .key.correct{background:#1c3a2b;border-color:#325e49}
@@ -141,3 +142,4 @@ body{
   .cell{border-radius:8px}
   #guessBtn{padding:0.5rem}
 }
+
