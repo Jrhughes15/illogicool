@@ -38,6 +38,7 @@ body{
   border-bottom: 1px solid #1d2631;
   margin: 5px;
   height: 90px;
+  display: flex;
 }
 .brand{ display: flex; align-items: center; gap: .6rem; text-decoration: none; color: var(--text); font-weight: 800; }
 .brand-mark{ font-size: 1.4rem; }
