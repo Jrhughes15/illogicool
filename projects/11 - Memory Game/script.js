@@ -208,7 +208,7 @@
       // Show both correct and entered values
       display.textContent = `Wrong. It was ${correct}. You entered ${guess}.`;
       toIdleLayout(); accepting = false;
-      // ⬇️ After losing, show "New Game" on the main button
+      // After losing, show "New Game" on the main button
       btnStart.textContent = "New Game";
     }
   }
@@ -218,7 +218,7 @@
   readyBadge.addEventListener("click", triggerOK);
   display.addEventListener("click", () => { if (showing) triggerOK(); });
 
-  // Keypad
+  // Keypad (on-screen) input remains the same
   pad.forEach(btn => {
     btn.addEventListener("click", () => {
       if (answerForm.classList.contains("hidden")) return;
@@ -235,7 +235,7 @@
     });
   });
 
-  // Input filter
+  // Native typing: keep only the sanitizer; don't duplicate digits
   input.addEventListener("input", () => {
     input.value = input.value.replace(/\D+/g, "");
     btnSubmit.disabled = input.value.length === 0;
@@ -249,7 +249,7 @@
   });
   btnStop.addEventListener("click", () => stopGame("Stopped"));
 
-  // Keyboard helpers
+  // Keyboard helpers: handle only Enter/Escape/Ready; DO NOT append digits here
   window.addEventListener("keydown", (e) => {
     if (e.key === "Enter"){
       if (!answerForm.classList.contains("hidden")){
@@ -263,10 +263,7 @@
     if (e.key === "Escape"){
       stopGame("Stopped");
     }
-    if (!answerForm.classList.contains("hidden") && /^[0-9]$/.test(e.key)){
-      input.value += e.key;
-      btnSubmit.disabled = input.value.length === 0;
-    }
+    // Removed numeric key handling to prevent double-entry
   });
 
   // Settings apply
