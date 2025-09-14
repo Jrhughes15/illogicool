@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>11 - Memory Game</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <h1>11</h1>
+
+      <!-- Right rail: scores tight to settings -->
+      <div class="top-rail">
+        <div class="scores">
+          <div class="score">
+            <span class="label">Streak</span>
+            <span id="currentStreak" class="value">0</span>
+          </div>
+          <div class="score">
+            <span class="label">Best</span>
+            <span id="bestStreak" class="value">11</span>
+          </div>
+          <div class="score">
+            <span class="label">Goal</span>
+            <span id="goalTarget" class="value">11</span>
+          </div>
+        </div>
+
+        <form id="settingsForm" class="settings-row" autocomplete="off">
+          <div class="setting sm">
+            <label for="modeSelect">Mode</label>
+            <select id="modeSelect">
+              <option value="normal" selected>Normal</option>
+              <option value="speed">Speed</option>
+            </select>
+          </div>
+
+          <div class="setting sm">
+            <label for="beatSelect">Beat</label>
+            <select id="beatSelect">
+              <option value="1400">Very Slow</option>
+              <option value="950">Slow</option>
+              <option value="700" selected>Normal</option>
+              <option value="500">Fast</option>
+              <option value="330">Very Fast</option>
+            </select>
+          </div>
+
+          <div class="setting sm">
+            <label for="goalInput">Goal</label>
+            <input id="goalInput" type="number" min="3" max="99" value="11" />
+          </div>
+
+          <button id="btnApply" class="btn tiny" type="button">Apply</button>
+        </form>
+      </div>
+    </header>
+
+    <!-- How to play: collapsed by default -->
+    <section class="howto">
+      <details>
+        <summary>How to play</summary>
+        <p>The sequence types in cumulatively: <code>4</code> → <code>40</code> → <code>409</code> … In Normal mode tap <b>Ready</b> (or the display) to hide it, then enter the full sequence. In Speed mode it hides automatically after typing finishes. You can tap the display to hide early in both modes. Inspired by Segments podcast #87: Hardly Memorizing (@26:34, Headgum). </p>
+      </details>
+    </section>
+
+    <!-- Board -->
+    <section class="board">
+      <!-- One-line default; grows only as needed -->
+      <div id="display" aria-live="polite" aria-atomic="true" class="display" title="Tap to hide when showing">Ready?</div>
+
+      <!-- Tight progress line -->
+      <div class="progress-line">
+        <div class="progress" id="goalProgress" aria-label="Progress toward goal" role="progressbar" aria-valuemin="0" aria-valuemax="11" aria-valuenow="0">
+          <div class="bar" id="goalBar"></div>
+        </div>
+        <div id="stepHint" class="step-hint-pill">0 of 11</div>
+      </div>
+
+      <!-- Single interaction band -->
+      <div class="interaction">
+        <!-- Controls: centered Start / Ready -->
+        <div id="controls" class="controls">
+          <button id="btnStart" class="btn primary big" type="button">Start</button>
+          <button id="readyBadge" class="pill ready big hidden" type="button" aria-label="Ready (hide sequence)">Ready</button>
+        </div>
+
+        <!-- Answer mode -->
+        <form id="answerForm" class="answer hidden" autocomplete="off">
+          <div class="input-stack">
+            <label class="visually-hidden" for="answerInput">Enter the full sequence</label>
+            <input
+              id="answerInput"
+              class="answer-input"
+              type="tel"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              placeholder="Type sequence here"
+              disabled
+              aria-label="Type the full sequence" />
+
+            <div class="pad">
+              <div class="pad-grid">
+                <button type="button" class="pad-key" data-key="1">1</button>
+                <button type="button" class="pad-key" data-key="2">2</button>
+                <button type="button" class="pad-key" data-key="3">3</button>
+
+                <button type="button" class="pad-key" data-key="4">4</button>
+                <button type="button" class="pad-key" data-key="5">5</button>
+                <button type="button" class="pad-key" data-key="6">6</button>
+
+                <button type="button" class="pad-key" data-key="7">7</button>
+                <button type="button" class="pad-key" data-key="8">8</button>
+                <button type="button" class="pad-key" data-key="9">9</button>
+
+                <button type="button" class="pad-key light" data-action="backspace" aria-label="Backspace">⌫</button>
+                <button type="button" class="pad-key" data-key="0">0</button>
+                <button type="button" class="pad-key light" data-action="clear" aria-label="Clear">C</button>
+              </div>
+            </div>
+
+            <!-- Submit/Stop only the width of the keypad -->
+            <div class="submit-row">
+              <button id="btnSubmit" class="btn success" type="submit" disabled>Submit</button>
+              <button id="btnStop" class="btn danger" type="button">Stop</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

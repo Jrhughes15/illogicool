@@ -1,0 +1,316 @@
+:root{
+  --bg: #0b0f14;
+  --panel: #111822;
+  --panel-2: #0e1520;
+  --ink: #e6f0ff;
+  --muted: #a6b3c2;
+  --accent: #4da3ff;
+  --accent-2: #36d399;
+  --danger: #ff6b6b;
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+*{ box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 600px at 20% 10%, rgba(77,163,255,0.10), transparent 60%),
+    radial-gradient(900px 500px at 80% 80%, rgba(54,211,153,0.08), transparent 60%),
+    var(--bg);
+}
+
+.visually-hidden{
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+.app{
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 10px;
+  min-height: 100%;
+}
+
+/* Top bar: title left, scores tight to settings on the right */
+.topbar{
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+  justify-items: end;
+}
+h1{
+  margin: 0;
+  font-size: clamp(28px, 3vw, 40px);
+  letter-spacing: 2px;
+}
+.top-rail{
+  display: flex;
+  align-items: stretch;
+  gap: 8px;            /* scores sit right next to settings */
+}
+
+.scores{
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.score{
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid #1a2533;
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  min-width: 74px;
+  text-align: center;
+}
+.score .label{
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-bottom: 2px;
+  letter-spacing: 0.3px;
+}
+.score .value{
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Compact settings */
+.settings-row{
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: #0c1420;
+  border: 1px solid #152237;
+  border-radius: 12px;
+  padding: 6px 8px;
+}
+.setting{
+  display: grid;
+  gap: 4px;
+}
+.setting.sm{ min-width: 108px; }
+.setting label{
+  font-size: 12px;
+  color: var(--muted);
+}
+.setting input, .setting select{
+  background: #0f1926;
+  color: var(--ink);
+  border: 1px solid #21334a;
+  border-radius: 10px;
+  padding: 6px 8px;
+  font-size: 14px;
+  min-height: 32px;
+}
+
+.btn{
+  appearance: none;
+  border: 1px solid #21405f;
+  background: #142131;
+  color: var(--ink);
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.04s ease, filter 0.15s ease, background 0.15s ease;
+}
+.btn.tiny{ padding: 6px 10px; font-size: 14px; border-radius: 10px; }
+.btn.primary{ background: linear-gradient(180deg, #1c2b40, #162234); border-color: #2a4f76; }
+.btn.success{ background: linear-gradient(180deg, #1e3a2c, #183124); border-color: #2d6f57; }
+.btn.danger{ background: linear-gradient(180deg, #3a1e1e, #301818); border-color: #6f2d2d; }
+.btn:hover{ filter: brightness(1.08); }
+.btn:active{ transform: translateY(1px); }
+
+/* How to play */
+.howto details{
+  background: #0c1420;
+  border: 1px solid #152237;
+  border-radius: 12px;
+  padding: 6px 8px;
+}
+.howto summary{
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ------------------------------
+   BOARD GRID (Start/Ready screen)
+   ------------------------------ */
+.board{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+  border: 1px solid #1a2533;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: clamp(10px, 2vw, 16px);
+  display: grid;
+  grid-template-rows:
+    minmax(calc(1.2em + 12px), auto)
+    50px
+    1fr;
+  row-gap: 6px;
+}
+
+/* One-line default display (now slightly bigger with extra bottom pad) */
+.display{
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  /* bump the size slightly */
+  font-size: clamp(28px, 6vw, 60px);
+  line-height: 1.22;
+  letter-spacing: 4px;
+
+  background: #0c1420;
+  border: 1px solid #162233;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+  user-select: none;
+
+  /* extra padding under text/messages like “Settings updated” */
+  padding: 8px 12px 14px;        /* top | sides | bottom */
+  min-height: calc(1.22em + 16px); /* one line + padding */
+  word-break: break-word;
+}
+.flash{
+  animation: flash 120ms ease-in-out;
+}
+@keyframes flash{
+  from{ transform: scale(0.985); filter: brightness(1.22); }
+  to{ transform: scale(1); filter: brightness(1); }
+}
+
+/* Row 2: fixed-height progress wrap */
+.progress-line{
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.progress{
+  height: 9px;
+  background: #0f1825;
+  border-radius: 999px;
+  border: 1px solid #1a2533;
+  overflow: hidden;
+  flex: 1 1 auto;
+}
+.progress .bar{
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 200ms ease;
+}
+.step-hint-pill{
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid #1a2533;
+  background: #0c1420;
+  color: #a6b3c2;
+  font-size: 12px;
+  flex: 0 0 auto;
+}
+
+/* Row 3: interaction (takes the rest, top-aligned) */
+.interaction{
+  display: grid;
+  align-content: start;
+  justify-items: center;
+}
+.hidden{ display: none !important; }
+
+/* Controls: centered Start/Ready, fixed height */
+.controls{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.big{
+  min-height: 46px;
+  padding: 0 18px;
+  font-size: 16px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.pill{
+  border-radius: 999px;
+  padding: 0 14px;
+  background: #0c1420;
+  border: 1px solid #2a3a52;
+  color: #cfe3ff;
+  font-weight: 700;
+}
+.pill.ready{ cursor: pointer; }
+
+/* Answer mode stack (centered width) */
+.answer{ display: grid; width: 100%; }
+.input-stack{
+  width: min(420px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 8px;
+}
+.answer-input{
+  width: 100%;
+  font-size: clamp(18px, 4.5vw, 26px);
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #21334a;
+  background: #0f1926;
+  color: var(--ink);
+  letter-spacing: 2px;
+}
+.answer-input:focus{ outline: none; box-shadow: 0 0 0 3px rgba(77,163,255,0.35); }
+
+.pad{ display: grid; place-items: center; }
+.pad-grid{
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.pad-key{
+  font-size: 22px;
+  padding: 13px 0;
+  border-radius: 14px;
+  border: 1px solid #294664;
+  background: linear-gradient(180deg, #142033, #0f1a29);
+  color: var(--ink);
+  cursor: pointer;
+  user-select: none;
+}
+.pad-key.light{
+  background: linear-gradient(180deg, #162233, #101a28);
+  color: #cdd7e6;
+  border-color: #2a4a6b;
+}
+.pad-key:active{ transform: translateY(1px); }
+
+/* Submit/Stop match keypad width */
+.submit-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.submit-row .btn{ width: 100%; }
+
+/* Responsive tweaks */
+@media (max-width: 560px){
+  .settings-row{ gap: 6px; }
+  .scores{ gap: 6px; }
+}
