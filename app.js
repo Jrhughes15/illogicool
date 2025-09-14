@@ -94,6 +94,19 @@ const projects = [
     repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Facility%20Janitor",
     stars: 0,
     date: "2025-09-14"
+  },
+  {
+    id: "11-memory-game",
+    title: "11 - Memory Game",
+    summary: "A simple memory challenge where players repeat an ever-growing sequence of numbers until they miss",
+    tags: [
+      "game",
+      "memory"
+    ],
+    demo: "projects/11 - Memory Game/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/11%20-%20Memory%20Game",
+    stars: 0,
+    date: "2025-09-14"
   }
 ];
 
