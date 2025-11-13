@@ -107,6 +107,19 @@ const projects = [
     repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/11%20-%20Memory%20Game",
     stars: 0,
     date: "2025-09-14"
+  },
+  {
+    id: "piston-panic",
+    title: "Piston Panic",
+    summary: "A seeded vertical platformer where a piston-leg robot leaps from platform to platform to outrun rising water, grab power ups, and dodge hazards.",
+    tags: [
+      "game",
+      "platformer"
+    ],
+    demo: "projects/Piston Panic/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Piston%20Panic",
+    stars: 0,
+    date: "2025-11-13"
   }
 ];
 
