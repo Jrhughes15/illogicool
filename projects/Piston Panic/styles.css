@@ -1,0 +1,136 @@
+:root{
+  --bg:#0f1115;
+  --panel:#1b1f28;
+  --ink:#e6eaf2;
+  --muted:#99a2b2;
+  --accent:#2aa198;
+  --accent-2:#6c9cff;
+  --danger:#ff4d4d;
+  --steel:#6b7280;
+  --grid:#303744;
+  --pill-bg:#fff;
+  --pill-ink:#111318;
+}
+:root.theme-light{
+  --bg:#f7f9fc; --panel:#ffffff; --ink:#101319; --muted:#4a5568;
+  --accent:#2b6cb0; --accent-2:#22a3a9; --danger:#d43d3d;
+  --steel:#9aa0a6; --grid:#dfe4ea; --pill-bg:#fff; --pill-ink:#111;
+}
+:root.theme-industrial{ --bg:#0f1115; }
+:root.theme-dark{ --bg:#0a0c10; }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  color:var(--ink);
+  background:radial-gradient(1200px 800px at 50% 80%, #141821, var(--bg));
+}
+
+#app{ min-height:100%; display:grid; place-items:center; padding:24px; }
+
+/* Panels */
+.panel{
+  width:min(720px, 92vw);
+  background:linear-gradient(#1b1f28, #171a22);
+  border:1px solid #2a2f3a;
+  border-radius:16px;
+  padding:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+}
+.panel h1{ margin:0 0 12px 0; letter-spacing:.5px; font-size:2rem; }
+.hint{ color:var(--muted); margin-top:12px; text-align:center; }
+
+/* Layout helpers */
+.row{display:flex; gap:12px; align-items:center}
+.stack{display:flex; flex-direction:column; gap:12px}
+.stack.sm{gap:6px}
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+input[type="text"], select, input[type="range"]{
+  width:100%; padding:10px 12px; background:#0f131a; color:var(--ink);
+  border:1px solid #2a2f3a; border-radius:10px; outline:none;
+}
+details{ border:1px solid #2a2f3a; border-radius:12px; padding:8px 12px; background:#10141c; }
+details[open]{background:#0f131a}
+summary{ cursor:pointer; color:var(--muted); font-weight:600; padding:6px 0; }
+
+/* Buttons */
+.btn{
+  cursor:pointer; padding:10px 14px; border-radius:10px; border:1px solid #2a2f3a;
+  color:var(--ink); background:#121722; transition:transform .02s ease, box-shadow .15s ease;
+  box-shadow:0 2px 0 rgba(0,0,0,.35);
+}
+.btn:hover{box-shadow:0 4px 10px rgba(0,0,0,.3)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{
+  background:linear-gradient(180deg, var(--accent-2), var(--accent));
+  border-color:#114d5a; color:#041417; font-weight:700;
+}
+.btn.small{padding:6px 10px; font-size:.9rem}
+
+/* Visibility */
+.hidden{display:none}
+.visible{display:block}
+
+/* Game area */
+.game{
+  position:relative;
+  width:min(860px, 96vw);
+  height:min(96vh, 1400px);
+  border-radius:16px;
+  background:linear-gradient(#0d1118, #0b0e14);
+  border:1px solid #2a2f3a;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  overflow:hidden;
+}
+#game{ width:100%; height:100%; display:block; background-color:#0d1118; }
+
+/* HUD */
+.hud{
+  position:absolute; top:10px; left:10px; right:10px;
+  display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
+  background:rgba(0,0,0,.35); padding:8px 10px; border-radius:10px;
+  border:1px solid rgba(255,255,255,.08); font-weight:700;
+}
+.hud-left{display:flex; flex-direction:column; gap:6px}
+.seed-row{opacity:.95}
+.hud-mid{display:flex; gap:18px; align-items:center}
+.hud-right{display:flex; align-items:center}
+
+/* Pills */
+.pills-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.pill{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:2px 10px; border-radius:999px; background:var(--pill-bg); color:var(--pill-ink);
+  font-weight:900; font-family:ui-monospace, Menlo, Consolas, monospace;
+  line-height:20px; height:22px; box-shadow:0 1px 0 rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.6);
+  border:1px solid rgba(0,0,0,.2);
+}
+.pill .count{font-weight:900}
+.pill.dim{ filter:saturate(.2) brightness(.75); opacity:.6; }
+.pill.active{ box-shadow:0 0 0 2px #fff8 inset, 0 1px 0 rgba(0,0,0,.4); }
+
+.pill-I{ background:#fff; }
+.pill-O{ background:#fff; }
+.pill-P{ background:#fff; }
+.pill-J{ background:#fff; }
+
+/* lives inline */
+.lives{ display:inline-flex; gap:6px; margin-left:8px; }
+.life{ width:18px; height:18px; display:inline-block; }
+.life::before{
+  content:"❤"; font-size:16px; line-height:18px; color:#ff6b6b; display:block; transform:translateY(-1px);
+}
+
+/* Dialogs */
+dialog{
+  border:none; border-radius:14px; padding:18px 20px; background:#1b1f28; color:var(--ink);
+  border:1px solid #2a2f3a; box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+dialog .row{justify-content:center}
+.center{text-align:center}
+
+/* Theme hooks */
+body[data-theme="light"]{background:#f5f7fb}
