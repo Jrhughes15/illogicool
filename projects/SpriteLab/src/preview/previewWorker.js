@@ -1,0 +1,1 @@
+// OffscreenCanvas preview worker placeholder.

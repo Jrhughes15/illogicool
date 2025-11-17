@@ -1,0 +1,1 @@
+// Simple event bus placeholder.
