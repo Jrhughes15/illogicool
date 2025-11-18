@@ -1,0 +1,1 @@
+// Aseprite JSON exporter placeholder.
