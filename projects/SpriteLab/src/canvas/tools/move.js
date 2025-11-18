@@ -1,1 +1,0 @@
-// Move tool placeholder.

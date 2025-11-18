@@ -1,1 +1,0 @@
-// Color helpers placeholder.

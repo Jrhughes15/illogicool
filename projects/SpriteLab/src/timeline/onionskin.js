@@ -1,1 +1,0 @@
-// Onion skin logic placeholder.

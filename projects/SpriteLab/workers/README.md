@@ -1,1 +1,0 @@
-/* Dedicated web workers live here. */
