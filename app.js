@@ -120,6 +120,21 @@ const projects = [
     repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Piston%20Panic",
     stars: 0,
     date: "2025-11-13"
+  },
+  {
+    id: "spritelab",
+    title: "SpriteLab",
+    summary: "A browser-based pixel animation editor with timeline, onion-skinning, and export tooling for sprite sheets/GIFs. ",
+    tags: [
+      "Tool",
+      "Utility",
+      "Pixel Art",
+      "Sprites"
+    ],
+    demo: "projects/SpriteLab/public/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/SpriteLab",
+    stars: 0,
+    date: "2025-11-18"
   }
 ];
 
