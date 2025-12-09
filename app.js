@@ -135,6 +135,20 @@ const projects = [
     repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/SpriteLab",
     stars: 0,
     date: "2025-11-18"
+  },
+  {
+    id: "watch-window",
+    title: "Watch Window",
+    summary: "A program taht helps you find YouTube videos that match your topic and fit the exact time you have, with inline playback and smart filters for length, quality, and popularity.",
+    tags: [
+      "Tool",
+      "Entertainment",
+      "Utility"
+    ],
+    demo: "projects/Watch Window/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Watch%20Window",
+    stars: 0,
+    date: "2025-12-09"
   }
 ];
 
