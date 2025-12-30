@@ -303,6 +303,7 @@
     fp: null, // per-finger counters for this session
     expected: "",
     index: 0,
+    started: false,
     completed: false,
     tickHandle: null
   };
@@ -352,7 +353,7 @@
     }
     practice.drillText.innerHTML = parts.join("");
   }
-  function escapeHTML(s) { return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+  function escapeHTML(s) { return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;","<":">&gt;",'"':"&quot;","'":"&#39;" }[c])); } // NOTE: keep one copy only
   function resetPracticeStats() { practice.stats = { startTime:0, elapsed:0, typed:0, correct:0, wrong:0, streak:0 }; updatePracticeStatsUI(); }
   function startPracticeTick() {
     if (practice.tickHandle) cancelAnimationFrame(practice.tickHandle);
@@ -383,7 +384,7 @@
     practice.fp = emptyFingerCounters();
     renderDrillText(practice.expected, 0);
     resetPracticeStats();
-    startPracticeTick();
+    practice.started = false; // wait for first key
     focusHiddenInput();
     if (practice.showHints.checked) setKeyboardHint(practice.kb, practice.expected[0] || " ");
     else clearKeyHints(practice.kb);
@@ -397,6 +398,12 @@
   practice.hiddenInput.addEventListener("keydown", e => {
     if (!practice.expected) return;
     const key = normalizeKey(e.key); if (!key) return;
+
+    // Start timer on first typed key of this drill
+    if (!practice.started) {
+      practice.started = true;
+      startPracticeTick();
+    }
     const expected = practice.expected[practice.index];
     const finger = charToFinger(expected) || "li";
     practice.fp[finger].typed++;
@@ -448,6 +455,8 @@
     showFingers: $("#arcade-fingers"),
     stats: { startTime:0, elapsed:0, typed:0, correct:0, wrong:0, score:0, lives:3 },
     fp: null,
+    state: "idle",         // "idle" | "ready" | "running" | "paused" | "life_pause" | "gameover"
+    pauseSince: 0,         // for overlay pauses; we freeze UI while paused
     running:false, raf:null, lastTick:0, spawnTimer:0, targets:[], idSeq:1,
     hadActivity:false
   };
@@ -475,24 +484,62 @@
     $("#arcade-acc").textContent = `${clamp(Math.round((arcade.stats.correct / total) * 100),0,100)}%`;
     $("#arcade-time").textContent = `${Math.floor(arcade.stats.elapsed)}s`;
   }
-  function arcadeStart(){ if (arcade.running) return; arcade.running = true; arcade.overlay.classList.add("hidden");
-    arcade.stats.startTime = now() - arcade.stats.elapsed * 1000; arcade.lastTick = now(); arcade.raf = requestAnimationFrame(arcadeTick); }
-  function arcadePause(show=true){ if (!arcade.running) return; arcade.running=false; if (arcade.raf) cancelAnimationFrame(arcade.raf);
-    if (show){ arcade.overlayTitle.textContent="Paused"; arcade.overlaySub.textContent="Press any key or click Resume"; arcade.overlay.classList.remove("hidden"); } }
+  function arcadeStart(){
+    if (arcade.running) return;
+    arcade.running = true;
+    arcade.overlay.classList.add("hidden");
+    arcade.stats.startTime = now() - arcade.stats.elapsed * 1000;
+    arcade.lastTick = now();
+    arcade.raf = requestAnimationFrame(arcadeTick);
+    arcade.state = "running";
+  }
+  function arcadePause(show=true){
+    if (!arcade.running) return;
+    arcade.running = false;
+    if (arcade.raf) cancelAnimationFrame(arcade.raf);
+    arcade.state = "paused";
+    if (show){
+      arcade.overlayTitle.textContent = "Paused";
+      arcade.overlaySub.textContent = "Press any key or click Resume";
+      arcade.overlay.classList.remove("hidden");
+    }
+  }
   function finalizeArcadeSession(reason) {
     if (arcade.stats.typed > 0) saveArcadeSession(reason);
   }
-  function arcadeReset(){ finalizeArcadeSession("reset"); arcadePause(false); arcade.targets.forEach(t => t.el.remove()); arcade.targets=[]; arcade.spawnTimer=0; resetArcadeStats(); updateArcadeStatsUI(); arcade.hadActivity=false; }
-  function arcadeGameOver(){ arcadePause(false); arcade.overlayTitle.textContent="Game Over";
-    arcade.overlaySub.textContent=`Score ${arcade.stats.score} - press Start to try again`; arcade.overlay.classList.remove("hidden"); finalizeArcadeSession("gameover"); }
+  function arcadeReset(){
+    finalizeArcadeSession("reset");
+    arcadePause(false);
+    arcade.targets.forEach(t => t.el.remove());
+    arcade.targets = [];
+    arcade.spawnTimer = 0;
+    resetArcadeStats();
+    updateArcadeStatsUI();
+    arcade.hadActivity = false;
+    arcade.state = "idle";
+  }
+  function arcadeGameOver(){
+    arcadePause(false);
+    arcade.overlayTitle.textContent = "Game Over";
+    arcade.overlaySub.textContent = `Score ${arcade.stats.score} - press Start to try again`;
+    arcade.overlay.classList.remove("hidden");
+    finalizeArcadeSession("gameover");
+  }
 
   function makeTargetText(){
     const type = arcade.targetType.value, filter = arcade.lessonFilter.value;
     let pool = ""; if (filter === "home" || filter === "top" || filter === "bottom") pool = LESSONS[filter];
-    if (type === "letters"){ const letters = (pool || (LESSONS.home + LESSONS.top + LESSONS.bottom));
-      const biased = pool ? letters : (LESSONS.home + LESSONS.home + LESSONS.top + LESSONS.bottom); return choice(biased.split("")); }
-    else { let list = Math.random() < 0.65 ? COMMON_WORDS_SHORT : COMMON_WORDS;
-      if (filter !== "none"){ const allowed = new Set(pool.split("")); const f = list.filter(w => [...w].every(ch => ch === " " || allowed.has(ch))); if (f.length) list = f; }
+    if (type === "letters"){
+      const letters = (pool || (LESSONS.home + LESSONS.top + LESSONS.bottom));
+      const biased = pool ? letters : (LESSONS.home + LESSONS.home + LESSONS.top + LESSONS.bottom);
+      return choice(biased.split(""));
+    } else {
+      let list = Math.random() < 0.65 ? COMMON_WORDS_SHORT : COMMON_WORDS;
+      if (filter !== "none"){
+        const allowed = new Set(pool.split(""));
+        const f = list.filter(w => [...w].every(ch => ch === " " || allowed.has(ch)));
+        if (f.length) list = f;
+      }
       return choice(list);
     }
   }
@@ -504,24 +551,102 @@
     const t = { id:arcade.idSeq++, el, x: clamp(Math.random()*pf.width, pad, pf.width - pad), y:18,
                 speed: p.baseSpeed + Math.random()*p.speedRand, textFull:text, pending:text };
     positionTarget(t); arcade.targets.push(t);
-    if (arcade.showHints.checked){ const next = nextArcadeHintChar(); if (next) setKeyboardHint(arcade.kb, next); }
+    if (arcade.showHints.checked){
+      const next = nextArcadeHintChar();
+      if (next) setKeyboardHint(arcade.kb, next);
+    }
   }
-  function renderTargetText(pending, full){ const doneLen = full.length - pending.length; const done = full.slice(0, doneLen);
-    return `<span class="done">${escapeHTML(done)}</span><span class="pending">${escapeHTML(pending)}</span>`; }
+  function renderTargetText(pending, full){
+    const doneLen = full.length - pending.length;
+    const done = full.slice(0, doneLen);
+    return `<span class="done">${escapeHTML(done)}</span><span class="pending">${escapeHTML(pending)}</span>`;
+  }
   function positionTarget(t){ t.el.style.left = `${t.x}px`; t.el.style.top = `${t.y}px`; }
+
+  function enterLifePause(){
+    // Stop the loop and show overlay
+    arcadePause(false); // stop RAF without changing overlay text
+    arcade.state = "life_pause";
+    arcade.overlayTitle.textContent = "Life lost";
+    arcade.overlaySub.textContent = "Field cleared. Press any key to continue";
+    // Clear bottom half of the playfield and lift remaining targets
+    clearBottomHalf();
+    arcade.overlay.classList.remove("hidden");
+  }
+
   function arcadeTick(){
     if (!arcade.running) return;
-    const tNow = now(), dt = (tNow - arcade.lastTick) / 1000; arcade.lastTick = tNow;
-    arcade.stats.elapsed = (tNow - arcade.stats.startTime) / 1000; updateArcadeStatsUI();
-    const p = arcadeParams(); arcade.spawnTimer += dt*1000; if (arcade.spawnTimer >= p.spawnEvery && arcade.targets.length < p.maxOnScreen){ arcade.spawnTimer=0; spawnTarget(); }
+
+    const tNow = now();
+    const dt = (tNow - arcade.lastTick) / 1000;
+    arcade.lastTick = tNow;
+
+    // advance timer UI
+    arcade.stats.elapsed = (tNow - arcade.stats.startTime) / 1000;
+    updateArcadeStatsUI();
+
+    // spawn
+    const p = arcadeParams();
+    arcade.spawnTimer += dt * 1000;
+    if (arcade.spawnTimer >= p.spawnEvery && arcade.targets.length < p.maxOnScreen){
+      arcade.spawnTimer = 0;
+      spawnTarget();
+    }
+
+    // move targets
     const pf = arcade.playfield.getBoundingClientRect();
-    for (let i=arcade.targets.length-1; i>=0; i--){ const t = arcade.targets[i]; t.y += t.speed*dt; positionTarget(t);
-      if (t.y > pf.height - 8){ t.el.remove(); arcade.targets.splice(i,1); arcade.stats.lives--; if (arcade.stats.lives <= 0){ updateArcadeStatsUI(); arcadeGameOver(); return; } } }
+    for (let i = arcade.targets.length - 1; i >= 0; i--){
+      const t = arcade.targets[i];
+      t.y += t.speed * dt;
+      positionTarget(t);
+
+      if (t.y > pf.height - 8){
+        t.el.remove();
+        arcade.targets.splice(i, 1);
+        arcade.stats.lives--;
+        updateArcadeStatsUI();
+
+        if (arcade.stats.lives <= 0){
+          arcadeGameOver();
+          return;
+        }
+
+        // Life lost pause (clear bottom half and wait for key)
+        enterLifePause();
+        return; // stop ticking until resume
+      }
+    }
+
+    // keep ticking
     arcade.raf = requestAnimationFrame(arcadeTick);
   }
-  function nextArcadeHintChar(){ const c = arcade.targets.filter(t => t.pending.length > 0); if (!c.length) return ""; c.sort((a,b)=>b.y-a.y); return c[0].pending[0] || ""; }
+
+  function clearBottomHalf(){
+    const pf = arcade.playfield.getBoundingClientRect();
+    const half = pf.height * 0.5;
+    for (let i = arcade.targets.length - 1; i >= 0; i--){
+      const t = arcade.targets[i];
+      if (t.y >= half){
+        t.el.remove();
+        arcade.targets.splice(i,1);
+      } else {
+        // bring survivors back up a bit to avoid edge crowding
+        t.y = Math.min(t.y, pf.height * 0.2);
+        positionTarget(t);
+      }
+    }
+  }
+
+  function nextArcadeHintChar(){
+    const c = arcade.targets.filter(t => t.pending.length > 0);
+    if (!c.length) return "";
+    c.sort((a,b)=>b.y-a.y);
+    return c[0].pending[0] || "";
+  }
   function handleArcadeKey(key){
-    if (!arcade.running || !key) return; arcade.hadActivity = true; arcade.stats.typed++;
+    if (!arcade.running || !key) return;
+    arcade.hadActivity = true;
+    arcade.stats.typed++;
     const matches = arcade.targets.filter(t => t.pending.length && t.pending[0].toLowerCase() === key.toLowerCase());
     if (!matches.length){
       arcade.stats.wrong++;
@@ -536,25 +661,81 @@
     const f = charToFinger(expectedChar) || "li";
     arcade.fp[f].typed++;
     t.pending = t.pending.slice(1);
-    flashKeyPress(arcade.kb, key); arcade.stats.correct++;
+    flashKeyPress(arcade.kb, key);
+    arcade.stats.correct++;
     t.el.innerHTML = renderTargetText(t.pending, t.textFull);
-    if (!t.pending.length){ const pts = Math.max(1, t.textFull.length); arcade.stats.score += pts; t.el.remove(); const idx = arcade.targets.findIndex(x => x.id === t.id); if (idx>=0) arcade.targets.splice(idx,1); }
-    if (arcade.showHints.checked){ const next = nextArcadeHintChar(); if (next) setKeyboardHint(arcade.kb, next); else clearKeyHints(arcade.kb); }
+    if (!t.pending.length){
+      const pts = Math.max(1, t.textFull.length);
+      arcade.stats.score += pts;
+      t.el.remove();
+      const idx = arcade.targets.findIndex(x => x.id === t.id);
+      if (idx>=0) arcade.targets.splice(idx,1);
+    }
+    if (arcade.showHints.checked){
+      const next = nextArcadeHintChar();
+      if (next) setKeyboardHint(arcade.kb, next); else clearKeyHints(arcade.kb);
+    }
     updateArcadeStatsUI();
   }
 
-  arcade.btnStart.addEventListener("click", () => { if (!arcade.running && arcade.targets.length===0 && arcade.stats.elapsed===0) spawnTarget(); arcadeStart(); });
+  arcade.btnStart.addEventListener("click", () => {
+    // Ready gate: show overlay and wait for any key to begin
+    arcade.state = "ready";
+    arcade.overlayTitle.textContent = "Get ready";
+    arcade.overlaySub.textContent = "Press any key to begin";
+    arcade.overlay.classList.remove("hidden");
+  });
   arcade.btnPause.addEventListener("click", () => arcadePause(true));
   arcade.btnReset.addEventListener("click", () => arcadeReset());
-  arcade.overlayClose.addEventListener("click", () => arcadeStart());
+
+  // Close button should behave like resume/begin
+  arcade.overlayClose.addEventListener("click", () => {
+    if (arcade.state === "ready") {
+      arcade.overlay.classList.add("hidden");
+      if (arcade.targets.length === 0 && arcade.stats.elapsed === 0) spawnTarget();
+      arcadeStart();
+      arcade.state = "running";
+    } else if (arcade.state === "life_pause" || arcade.state === "paused") {
+      arcade.overlay.classList.add("hidden");
+      arcadeStart();
+      arcade.state = "running";
+    }
+  });
+
   document.addEventListener("keydown", e => {
     if (!$("#arcade").classList.contains("active")) return;
-    if (!arcade.overlay.classList.contains("hidden")){ arcadeStart(); e.preventDefault(); return; }
-    const key = normalizeKey(e.key); if (!key) return; handleArcadeKey(key); e.preventDefault();
+
+    // If an overlay is up, use any key to either begin or resume
+    if (!arcade.overlay.classList.contains("hidden")) {
+      if (arcade.state === "ready") {
+        // First real start
+        arcade.overlay.classList.add("hidden");
+        if (arcade.targets.length === 0 && arcade.stats.elapsed === 0) spawnTarget();
+        arcadeStart();
+        arcade.state = "running";
+      } else if (arcade.state === "life_pause" || arcade.state === "paused") {
+        // Resume after life loss or pause
+        arcade.overlay.classList.add("hidden");
+        arcadeStart();
+        arcade.state = "running";
+      }
+      e.preventDefault();
+      return;
+    }
+
+    // Normal running input
+    const key = normalizeKey(e.key); if (!key) return;
+    handleArcadeKey(key);
+    e.preventDefault();
   });
-  $("#arcade-hints").addEventListener("change", () => { if (!arcade.showHints.checked) clearKeyHints(arcade.kb);
-    else { const next = nextArcadeHintChar(); if (next) setKeyboardHint(arcade.kb, next); }});
-  $("#arcade-fingers").addEventListener("change", () => { $("#keyboard-arcade").classList.toggle("show-fingers", arcade.showFingers.checked); });
+
+  $("#arcade-hints").addEventListener("change", () => {
+    if (!arcade.showHints.checked) clearKeyHints(arcade.kb);
+    else { const next = nextArcadeHintChar(); if (next) setKeyboardHint(arcade.kb, next); }
+  });
+  $("#arcade-fingers").addEventListener("change", () => {
+    $("#keyboard-arcade").classList.toggle("show-fingers", arcade.showFingers.checked);
+  });
   resetArcadeStats();
 
   // -------------------------
@@ -645,6 +826,7 @@
     queue: [],
     index: 0,
     completed:false,
+    started: false,
     tickHandle: null
   };
 
@@ -718,7 +900,7 @@
     directions.completed = false;
     directions.fp = emptyFingerCounters();
     resetDirStats();
-    startDirTick();
+    directions.started = false; // wait for first key
     renderDirTokens();
     focusHiddenInputDir();
     setDirHintToCurrent();
@@ -735,6 +917,13 @@
   directions.hiddenInput.addEventListener("keydown", e => {
     if (!directions.queue.length) return;
     const key = normalizeKey(e.key); if (!key) return;
+
+    // Start timer on first typed key of this set
+    if (!directions.started) {
+      directions.started = true;
+      startDirTick();
+    }
+
     const cur = directions.queue[directions.index];
     const expectedFinger = directions.fingerSel.value;
     directions.fp[expectedFinger].typed++;
@@ -1001,9 +1190,6 @@
   // Render stats on initial load (after building UI)
   renderStats();
 
-  // -------------------------
-  // Helpers reused
-  // -------------------------
-  function escapeHTML(s) { return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+  // No duplicate helpers block; keep escapeHTML defined once above.
 
 })();
