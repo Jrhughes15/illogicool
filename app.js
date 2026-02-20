@@ -135,6 +135,20 @@ const projects = [
     repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/SpriteLab",
     stars: 0,
     date: "2025-11-18"
+  },
+  {
+    id: "f-i-calculator",
+    title: "F&I Calculator",
+    summary: "A browser-based calculator that lets you build and evaluate full arithmetic expressions with feet-and-inches measurements and numeric multipliers, using auto-commit logic and proper unit conversion.",
+    tags: [
+      "Tool",
+      "Utility",
+      "Calculator"
+    ],
+    demo: "projects/F&I Calculator/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/F%26I%20Calculator",
+    stars: 0,
+    date: "2026-02-20"
   }
 ];
 
