@@ -149,6 +149,18 @@ const projects = [
     repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/F%26I%20Calculator",
     stars: 0,
     date: "2026-02-20"
+  },
+  {
+    id: "tug-o-trivia",
+    title: "Tug-o-Trivia",
+    summary: "Tug-o-Trivia is a polished browser arcade game where players answer trivia questions to pull a tug-of-war rope and overpower their opponent.",
+    tags: [
+      "game"
+    ],
+    demo: "projects/Tug-o-Trivia/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Tug-o-Trivia",
+    stars: 0,
+    date: "2026-03-27"
   }
 ];
 
