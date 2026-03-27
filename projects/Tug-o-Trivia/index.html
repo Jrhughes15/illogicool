@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tug-o-Trivia</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="game-shell" data-screen="title">
+    <div class="backdrop-layer backdrop-stars"></div>
+    <div class="backdrop-layer backdrop-rays"></div>
+    <div class="backdrop-layer backdrop-crowd"></div>
+    <div class="backdrop-layer backdrop-grid"></div>
+
+    <div class="global-controls">
+      <button class="chip-toggle" data-action="toggle-music" aria-pressed="true">
+        <span class="chip-label">Music</span>
+        <span id="music-toggle-text">On</span>
+      </button>
+      <button class="chip-toggle" data-action="toggle-sfx" aria-pressed="true">
+        <span class="chip-label">SFX</span>
+        <span id="sfx-toggle-text">On</span>
+      </button>
+    </div>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+
+    <main class="shell-frame">
+      <section class="screen active title-screen" data-screen="title">
+        <div class="screen-panel hero-panel">
+          <div class="hero-copy">
+            <p class="eyebrow">Arcade Trivia Showdown</p>
+            <h1 class="game-title">
+              <span class="title-word">Tug-</span>
+              <span class="title-pivot">o</span>
+              <span class="title-word title-tail">-Trivia</span>
+            </h1>
+            <p class="hero-tagline">Battle for the rope. Win with brains, speed, and perfect timing.</p>
+          </div>
+
+          <div class="menu-stack">
+            <button class="menu-button primary" data-action="goto" data-target="mode">Play</button>
+            <button class="menu-button" data-action="goto" data-target="howto">How to Play</button>
+            <button class="menu-button" data-action="goto" data-target="options">Options</button>
+            <button class="menu-button" data-action="goto" data-target="credits">Credits</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen selection-screen" data-screen="mode">
+        <div class="screen-panel">
+          <div class="screen-heading">
+            <p class="eyebrow">Step 1</p>
+            <h2>Choose a Match</h2>
+            <p>Pick a mode, set the names, then move into category and bracket setup.</p>
+          </div>
+
+          <div class="selection-grid mode-grid">
+            <button class="selection-card versus-card" data-action="set-mode" data-mode="pvp">
+              <span class="card-kicker">Local Duel</span>
+              <strong>Player vs Player</strong>
+              <span>Left uses <b>A S D F</b>, right uses <b>J K L ;</b>.</span>
+            </button>
+
+            <button class="selection-card versus-card" data-action="set-mode" data-mode="cpu">
+              <span class="card-kicker">Solo Clash</span>
+              <strong>Player vs CPU</strong>
+              <span>Mouse or <b>1 2 3 4</b> versus an adaptive trivia bot.</span>
+            </button>
+
+            <button class="selection-card versus-card" data-action="set-mode" data-mode="tournament">
+              <span class="card-kicker">Bracket Night</span>
+              <strong>Local Tournament</strong>
+              <span>Four local teams battle through two semifinals and one championship match.</span>
+            </button>
+          </div>
+
+          <section class="mode-setup-panel">
+            <article class="mode-setup-copy">
+              <p class="card-kicker">Roster Setup</p>
+              <h3 id="mode-setup-title">Local Duel Names</h3>
+              <p id="mode-setup-subtitle">These names appear on the arena HUD, win screen, and tournament bracket.</p>
+            </article>
+
+            <div class="mode-setup-forms">
+              <div class="mode-setup-grid active" data-setup-mode="pvp">
+                <label class="name-field" for="pvp-left-name">
+                  <span>Left Player</span>
+                  <input id="pvp-left-name" class="name-input" type="text" maxlength="18" data-setup-input="pvp-left" placeholder="Player One">
+                </label>
+                <label class="name-field" for="pvp-right-name">
+                  <span>Right Player</span>
+                  <input id="pvp-right-name" class="name-input" type="text" maxlength="18" data-setup-input="pvp-right" placeholder="Player Two">
+                </label>
+              </div>
+
+              <div class="mode-setup-grid cpu-setup-grid" data-setup-mode="cpu">
+                <label class="name-field" for="cpu-human-name">
+                  <span>Player Name</span>
+                  <input id="cpu-human-name" class="name-input" type="text" maxlength="18" data-setup-input="cpu-human" placeholder="Player One">
+                </label>
+                <article class="setup-note-card">
+                  <span class="hud-label">CPU Rival</span>
+                  <strong>Difficulty decides the base speed, then a personality adds style.</strong>
+                </article>
+              </div>
+
+              <div class="mode-setup-grid tournament-setup-grid" data-setup-mode="tournament">
+                <label class="name-field" for="tournament-team-1">
+                  <span>Seed 1</span>
+                  <input id="tournament-team-1" class="name-input" type="text" maxlength="18" data-setup-input="tournament-0" placeholder="Brain Bolts">
+                </label>
+                <label class="name-field" for="tournament-team-2">
+                  <span>Seed 2</span>
+                  <input id="tournament-team-2" class="name-input" type="text" maxlength="18" data-setup-input="tournament-1" placeholder="Quiz Comets">
+                </label>
+                <label class="name-field" for="tournament-team-3">
+                  <span>Seed 3</span>
+                  <input id="tournament-team-3" class="name-input" type="text" maxlength="18" data-setup-input="tournament-2" placeholder="Neon Owls">
+                </label>
+                <label class="name-field" for="tournament-team-4">
+                  <span>Seed 4</span>
+                  <input id="tournament-team-4" class="name-input" type="text" maxlength="18" data-setup-input="tournament-3" placeholder="Turbo Foxes">
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <div class="screen-actions">
+            <button class="menu-button slim" data-action="goto" data-target="title">Back</button>
+            <button class="menu-button primary" id="mode-continue-button" data-action="continue-from-mode">Continue</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen selection-screen" data-screen="difficulty">
+        <div class="screen-panel">
+          <div class="screen-heading">
+            <p class="eyebrow">Step 2</p>
+            <h2>Pick a CPU Difficulty</h2>
+            <p>Faster bots answer earlier and miss less often.</p>
+          </div>
+
+          <div class="selection-grid three-up">
+            <button class="selection-card difficulty-card easy" data-action="set-difficulty" data-difficulty="easy">
+              <span class="card-kicker">Relaxed</span>
+              <strong>Easy</strong>
+              <span>Slow hands, shaky trivia memory, comeback-friendly.</span>
+            </button>
+
+            <button class="selection-card difficulty-card medium" data-action="set-difficulty" data-difficulty="medium">
+              <span class="card-kicker">Balanced</span>
+              <strong>Medium</strong>
+              <span>Steady response times and a solid hit rate.</span>
+            </button>
+
+            <button class="selection-card difficulty-card hard" data-action="set-difficulty" data-difficulty="hard">
+              <span class="card-kicker">Serious Heat</span>
+              <strong>Hard</strong>
+              <span>Sharper recall, faster locks, much less mercy.</span>
+            </button>
+          </div>
+
+          <div class="screen-actions">
+            <button class="menu-button slim" data-action="goto" data-target="mode">Back</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen selection-screen" data-screen="category">
+        <div class="screen-panel">
+          <div class="screen-heading">
+            <p class="eyebrow">Step 3</p>
+            <h2>Select a Category</h2>
+            <p>Some API categories are smaller. If a pool runs thin, the game blends in random mix automatically.</p>
+          </div>
+
+          <div class="selection-grid category-grid">
+            <button class="selection-card category-card" data-action="set-category" data-category="random">
+              <span class="card-kicker">Wildcard</span>
+              <strong>Random Mix</strong>
+              <span>A balanced shuffle across the whole trivia arena.</span>
+            </button>
+            <button class="selection-card category-card" data-action="set-category" data-category="general">
+              <span class="card-kicker">Classic</span>
+              <strong>General Knowledge</strong>
+              <span>Wide-ranging facts and familiar quiz-show staples.</span>
+            </button>
+            <button class="selection-card category-card" data-action="set-category" data-category="science">
+              <span class="card-kicker">Lab Sparks</span>
+              <strong>Science</strong>
+              <span>Nature, physics, biology, and brainy curiosities.</span>
+            </button>
+            <button class="selection-card category-card" data-action="set-category" data-category="history">
+              <span class="card-kicker">Time Warp</span>
+              <strong>History</strong>
+              <span>Empires, revolutions, inventions, and major moments.</span>
+            </button>
+            <button class="selection-card category-card" data-action="set-category" data-category="entertainment">
+              <span class="card-kicker">Spotlight</span>
+              <strong>Entertainment</strong>
+              <span>Film, TV, games, and pop-culture sparks.</span>
+            </button>
+            <button class="selection-card category-card" data-action="set-category" data-category="sports">
+              <span class="card-kicker">Stadium</span>
+              <strong>Sports</strong>
+              <span>Competitive legends, rules, records, and teams.</span>
+            </button>
+          </div>
+
+          <div class="screen-actions">
+            <button class="menu-button slim" data-action="back-from-category">Back</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen selection-screen" data-screen="bracket">
+        <div class="screen-panel tournament-screen-panel">
+          <div class="screen-heading compact">
+            <p class="eyebrow">Bracket Night</p>
+            <h2>Tournament Bracket</h2>
+            <p id="bracket-subtitle">Set the field, review the path, then launch the next tournament match.</p>
+          </div>
+
+          <div class="tournament-layout">
+            <section class="bracket-board">
+              <div class="bracket-column semifinals">
+                <article class="bracket-match" id="bracket-match-0">
+                  <span class="stage-chip">Semifinal 1</span>
+                  <div class="bracket-team-slot" id="bracket-sf1-left">Seed 1</div>
+                  <div class="bracket-team-slot" id="bracket-sf1-right">Seed 2</div>
+                </article>
+                <article class="bracket-match" id="bracket-match-1">
+                  <span class="stage-chip">Semifinal 2</span>
+                  <div class="bracket-team-slot" id="bracket-sf2-left">Seed 3</div>
+                  <div class="bracket-team-slot" id="bracket-sf2-right">Seed 4</div>
+                </article>
+              </div>
+
+              <div class="bracket-connector-column">
+                <span class="bracket-link top"></span>
+                <span class="bracket-link middle"></span>
+                <span class="bracket-link bottom"></span>
+              </div>
+
+              <div class="bracket-column final">
+                <article class="bracket-match championship" id="bracket-match-2">
+                  <span class="stage-chip crown">Championship</span>
+                  <div class="bracket-team-slot" id="bracket-final-left">Winner SF1</div>
+                  <div class="bracket-team-slot" id="bracket-final-right">Winner SF2</div>
+                </article>
+                <article class="bracket-champion-card">
+                  <span class="hud-label">Cup Watch</span>
+                  <strong id="bracket-champion">Champion Pending</strong>
+                </article>
+              </div>
+            </section>
+
+            <aside class="bracket-sidebar">
+              <article class="info-card bracket-info-card">
+                <h3>Current Match</h3>
+                <p id="bracket-current-match">Semifinal 1 is up next.</p>
+              </article>
+              <article class="info-card bracket-info-card">
+                <h3>Ruleset</h3>
+                <p id="bracket-ruleset">Random Mix, standard rope, and standard timer.</p>
+              </article>
+              <article class="info-card bracket-info-card">
+                <h3>Field</h3>
+                <p id="bracket-field-summary">Four local teams. Winners move on, champion takes the cup.</p>
+              </article>
+            </aside>
+          </div>
+
+          <div class="screen-actions">
+            <button class="menu-button slim" data-action="back-from-bracket">Back</button>
+            <button class="menu-button primary" id="start-bracket-button" data-action="start-tournament-match">Start Semifinal 1</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen info-screen" data-screen="howto">
+        <div class="screen-panel">
+          <div class="screen-heading compact">
+            <p class="eyebrow">How It Works</p>
+            <h2>Win the Rope</h2>
+            <p>Every question is a power struggle. Answer correctly and answer fast.</p>
+          </div>
+
+          <div class="howto-grid">
+            <article class="info-card">
+              <h3>Round Flow</h3>
+              <p>Both sides see the same question and four choices. Lock in before the timer runs out.</p>
+            </article>
+            <article class="info-card">
+              <h3>Pull Power</h3>
+              <p>Correct answers give 2 power. Under 4 seconds adds 1, under 2 seconds adds 2.</p>
+            </article>
+            <article class="info-card">
+              <h3>Streaks</h3>
+              <p>Every third correct answer in a row adds a bonus pull. Miss once and the streak snaps.</p>
+            </article>
+            <article class="info-card">
+              <h3>Victory</h3>
+              <p>Drag the center marker into your win zone before the other side does.</p>
+            </article>
+            <article class="info-card controls">
+              <h3>Player vs Player</h3>
+              <p><b>Left:</b> A S D F<br><b>Right:</b> J K L ;<br><b>Pause:</b> Escape</p>
+            </article>
+            <article class="info-card controls">
+              <h3>Player vs CPU</h3>
+              <p><b>Answer:</b> Mouse or 1 2 3 4<br><b>Pause:</b> Escape<br><b>Easy:</b> reckless and slower<br><b>Medium:</b> balanced and adaptive<br><b>Hard:</b> sharper, calmer, and more punishing<br><b>Profiles:</b> toggle active personalities in Options</p>
+            </article>
+          </div>
+
+          <div class="screen-actions">
+            <button class="menu-button slim" data-action="goto" data-target="title">Back</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen info-screen" data-screen="options">
+        <div class="screen-panel">
+          <div class="screen-heading compact">
+            <p class="eyebrow">Customize</p>
+            <h2>Options</h2>
+            <p>Settings save locally in your browser.</p>
+          </div>
+
+          <div class="options-grid">
+            <article class="option-card" title="Turns the background music loop on or off.">
+              <h3>Music</h3>
+              <div class="option-row">
+                <button class="option-pill" data-action="set-option" data-option="music" data-value="on">On</button>
+                <button class="option-pill" data-action="set-option" data-option="music" data-value="off">Off</button>
+              </div>
+            </article>
+            <article class="option-card" title="Turns menu, trivia, and rope impact sound effects on or off.">
+              <h3>Sound Effects</h3>
+              <div class="option-row">
+                <button class="option-pill" data-action="set-option" data-option="sfx" data-value="on">On</button>
+                <button class="option-pill" data-action="set-option" data-option="sfx" data-value="off">Off</button>
+              </div>
+            </article>
+            <article class="option-card" title="Standard is quicker to finish. Showdown uses a longer rope for more back-and-forth rounds.">
+              <h3>Rope Length</h3>
+              <div class="option-row">
+                <button class="option-pill" data-action="set-option" data-option="ropeLength" data-value="standard">Standard</button>
+                <button class="option-pill" data-action="set-option" data-option="ropeLength" data-value="showdown">Showdown</button>
+              </div>
+            </article>
+            <article class="option-card" title="Controls the pre-round word-by-word question read-in. Instant starts the timer right away, Average mimics a normal read pace, and Relaxed gives more time before answers appear.">
+              <h3>Question Reveal</h3>
+              <div class="option-row">
+                <button class="option-pill" data-action="set-option" data-option="questionReveal" data-value="instant">Instant</button>
+                <button class="option-pill" data-action="set-option" data-option="questionReveal" data-value="average">Average</button>
+                <button class="option-pill" data-action="set-option" data-option="questionReveal" data-value="relaxed">Relaxed</button>
+              </div>
+            </article>
+            <article class="option-card" title="Standard keeps more thinking time. Rapid shortens the question clock for snappier matches.">
+              <h3>Round Timer</h3>
+              <div class="option-row">
+                <button class="option-pill" data-action="set-option" data-option="timer" data-value="standard">Standard</button>
+                <button class="option-pill" data-action="set-option" data-option="timer" data-value="rapid">Rapid</button>
+              </div>
+            </article>
+            <article class="option-card" title="Full keeps all motion effects. Reduced tones down animation and movement.">
+              <h3>Motion</h3>
+              <div class="option-row">
+                <button class="option-pill" data-action="set-option" data-option="motion" data-value="full">Full</button>
+                <button class="option-pill" data-action="set-option" data-option="motion" data-value="reduced">Reduced</button>
+              </div>
+            </article>
+            <article class="option-card" title="High contrast strengthens text and interface separation for readability.">
+              <h3>Contrast</h3>
+              <div class="option-row">
+                <button class="option-pill" data-action="set-option" data-option="contrast" data-value="standard">Standard</button>
+                <button class="option-pill" data-action="set-option" data-option="contrast" data-value="high">High</button>
+              </div>
+            </article>
+            <article class="option-card" title="Large text increases headings, HUD values, and answer text throughout the game.">
+              <h3>Text Size</h3>
+              <div class="option-row">
+                <button class="option-pill" data-action="set-option" data-option="textSize" data-value="normal">Normal</button>
+                <button class="option-pill" data-action="set-option" data-option="textSize" data-value="large">Large</button>
+              </div>
+            </article>
+            <article class="option-card option-card-wide" title="Enabled modifiers can appear during a match. Hover each chip for its exact effect.">
+              <h3>Match Modifiers</h3>
+              <div class="option-row option-row-wrap">
+                <button class="option-pill modifier-pill-toggle" data-action="toggle-modifier" data-modifier="doublePull" title="Every rope movement is doubled for that round, up to the normal safety clamp.">Double Pull</button>
+                <button class="option-pill modifier-pill-toggle" data-action="toggle-modifier" data-modifier="lightningRound" title="The timer is cut down, so both sides need to answer much faster.">Lightning Round</button>
+                <button class="option-pill modifier-pill-toggle" data-action="toggle-modifier" data-modifier="slipperyRope" title="Wrong answers become more punishing and can cost traction during the pull.">Slippery Rope</button>
+              </div>
+            </article>
+            <article class="option-card option-card-wide cpu-options-card" title="Difficulty controls the base bot level. Enabled personalities are the only styles the CPU can roll. Hover each chip for behavior details.">
+              <h3>CPU Personalities</h3>
+              <div class="cpu-profile-grid" id="cpu-personality-list"></div>
+            </article>
+          </div>
+
+          <div class="screen-actions">
+            <button class="menu-button slim" data-action="goto" data-target="title">Back</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen info-screen" data-screen="credits">
+        <div class="screen-panel credits-panel">
+          <div class="screen-heading compact">
+            <p class="eyebrow">Credits</p>
+            <h2>Built for the Browser</h2>
+            <p>Everything runs with plain HTML, CSS, and JavaScript.</p>
+          </div>
+
+          <div class="credits-grid">
+            <article class="info-card">
+              <h3>Design</h3>
+              <p>Arcade-showdown presentation, animated stage lighting, and tactile HUD crafted for a single 16:9 shell.</p>
+            </article>
+            <article class="info-card">
+              <h3>Trivia</h3>
+              <p>Fresh batches from Open Trivia DB with session tokens, graceful fallback handling, and built-in local questions.</p>
+            </article>
+            <article class="info-card">
+              <h3>Audio</h3>
+              <p>Music loop and sound effects synthesized live with the Web Audio API. No external assets required.</p>
+            </article>
+            <article class="info-card">
+              <h3>Play Style</h3>
+              <p>Fast answer bonuses, streak pressure, CPU personalities, and dramatic rope impacts keep matches lively.</p>
+            </article>
+          </div>
+
+          <div class="screen-actions">
+            <button class="menu-button slim" data-action="goto" data-target="title">Back</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen gameplay-screen" data-screen="gameplay">
+        <div class="gameplay-topbar">
+          <div class="hud-badge">
+            <span class="hud-label">Round</span>
+            <strong id="round-display">1 / 18</strong>
+          </div>
+          <div class="timer-wrap">
+            <div class="timer-copy">
+              <span class="hud-label">Timer</span>
+              <strong id="timer-display">8.0</strong>
+            </div>
+            <div class="timer-track">
+              <div id="timer-bar" class="timer-bar"></div>
+            </div>
+          </div>
+          <div class="hud-badge">
+            <span class="hud-label">Category</span>
+            <strong id="category-display">Random Mix</strong>
+          </div>
+          <button class="pause-button" data-action="pause-game">Pause</button>
+        </div>
+
+        <div class="arena-shell" id="arena-shell">
+          <aside class="team-panel left" id="left-team-panel">
+            <div class="team-panel-head">
+              <span class="team-name" id="left-team-name">Left Team</span>
+              <span class="team-role" id="left-role-label">Player One</span>
+            </div>
+            <div class="team-avatar">
+              <div class="avatar-core">
+                <span class="avatar-eye left"></span>
+                <span class="avatar-eye right"></span>
+                <span class="avatar-emblem"></span>
+              </div>
+            </div>
+            <div class="team-stats">
+              <div class="stat-box">
+                <span class="hud-label">Score</span>
+                <strong id="left-score">0</strong>
+              </div>
+              <div class="stat-box">
+                <span class="hud-label">Streak</span>
+                <strong id="left-streak">0</strong>
+              </div>
+              <div class="stat-box">
+                <span class="hud-label">Lock</span>
+                <strong id="left-lock-status">Waiting</strong>
+              </div>
+            </div>
+          </aside>
+
+          <section class="center-stage">
+            <div class="question-panel">
+              <div class="question-meta">
+                <span id="mode-display">Player vs Player</span>
+                <span id="difficulty-display">Local Duel</span>
+              </div>
+              <h2 id="question-text">Question loading...</h2>
+              <div class="stage-callout-row">
+                <span class="stage-chip modifier-chip" id="modifier-display">Classic Round</span>
+                <span class="stage-chip source-chip" id="source-display">Fresh API Batch</span>
+              </div>
+              <p class="announcer-banner" id="announcer-text" aria-live="polite">The stage lights are up. The crowd wants a clean pull.</p>
+            </div>
+
+            <div class="rope-stage">
+              <div class="rope-score-label left">LEFT WIN</div>
+              <div class="rope-score-label right">RIGHT WIN</div>
+              <div class="rope-meter">
+                <div class="rope-boundary left"></div>
+                <div class="rope-boundary right"></div>
+                <div class="rope-track-glow"></div>
+                <div class="rope-line"></div>
+                <div class="rope-knots"></div>
+                <div class="rope-marker" id="rope-marker">
+                  <span class="marker-core"></span>
+                  <span class="marker-ring"></span>
+                </div>
+                <div class="impact-burst" id="impact-burst"></div>
+                <div class="particle-layer" id="particle-layer"></div>
+              </div>
+            </div>
+
+            <div class="answers-grid" id="answers-grid">
+              <button class="answer-card" data-answer-index="0">
+                <span class="answer-slot">1</span>
+                <span class="answer-copy"></span>
+                <span class="answer-hints" id="answer-hint-0"></span>
+              </button>
+              <button class="answer-card" data-answer-index="1">
+                <span class="answer-slot">2</span>
+                <span class="answer-copy"></span>
+                <span class="answer-hints" id="answer-hint-1"></span>
+              </button>
+              <button class="answer-card" data-answer-index="2">
+                <span class="answer-slot">3</span>
+                <span class="answer-copy"></span>
+                <span class="answer-hints" id="answer-hint-2"></span>
+              </button>
+              <button class="answer-card" data-answer-index="3">
+                <span class="answer-slot">4</span>
+                <span class="answer-copy"></span>
+                <span class="answer-hints" id="answer-hint-3"></span>
+              </button>
+            </div>
+
+            <div class="result-strip">
+              <div class="result-banner" id="last-result" aria-live="polite">Grab the rope and get ready.</div>
+              <div class="controls-banner" id="controls-display">Left: A S D F | Right: J K L ; | Pause: Esc</div>
+            </div>
+          </section>
+
+          <aside class="team-panel right" id="right-team-panel">
+            <div class="team-panel-head">
+              <span class="team-name" id="right-team-name">Right Team</span>
+              <span class="team-role" id="right-role-label">Player Two</span>
+            </div>
+            <div class="team-avatar">
+              <div class="avatar-core">
+                <span class="avatar-eye left"></span>
+                <span class="avatar-eye right"></span>
+                <span class="avatar-emblem"></span>
+              </div>
+            </div>
+            <div class="team-stats">
+              <div class="stat-box">
+                <span class="hud-label">Score</span>
+                <strong id="right-score">0</strong>
+              </div>
+              <div class="stat-box">
+                <span class="hud-label">Streak</span>
+                <strong id="right-streak">0</strong>
+              </div>
+              <div class="stat-box">
+                <span class="hud-label">Lock</span>
+                <strong id="right-lock-status">Waiting</strong>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <div class="overlay hidden" id="loading-overlay">
+      <div class="overlay-card">
+        <div class="spinner-ring"></div>
+        <h2>Building the Match</h2>
+        <p id="loading-message">Fetching trivia and tightening the rope...</p>
+      </div>
+    </div>
+
+    <div class="overlay hidden" id="pause-overlay">
+      <div class="overlay-card pause-card">
+        <p class="eyebrow">Paused</p>
+        <h2>Take Five</h2>
+        <p>The tug arena is frozen. Resume when both sides are ready.</p>
+        <div class="overlay-actions">
+          <button class="menu-button primary" data-action="resume-game">Resume</button>
+          <button class="menu-button" data-action="restart-match">Restart</button>
+          <button class="menu-button slim" data-action="return-title">Main Menu</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay hidden" id="win-overlay">
+      <div class="overlay-card win-card">
+        <p class="eyebrow">Match Complete</p>
+        <h2 id="win-title">Left Team Wins!</h2>
+        <p id="win-subtitle">A clean pull with a late streak surge.</p>
+        <p id="tournament-progress" class="tournament-progress"></p>
+        <div class="win-stats">
+          <div class="stat-box">
+            <span class="hud-label">Rounds</span>
+            <strong id="win-rounds">0</strong>
+          </div>
+          <div class="stat-box">
+            <span class="hud-label">Final Pull</span>
+            <strong id="win-pull">0</strong>
+          </div>
+          <div class="stat-box">
+            <span class="hud-label">Best Streak</span>
+            <strong id="win-streak">0</strong>
+          </div>
+          <div class="stat-box">
+            <span class="hud-label">Accuracy</span>
+            <strong id="win-accuracy">0%</strong>
+          </div>
+        </div>
+        <div class="overlay-actions">
+          <button class="menu-button primary hidden-button" id="continue-tournament-button" data-action="continue-tournament">Next Match</button>
+          <button class="menu-button primary" data-action="restart-match">Play Again</button>
+          <button class="menu-button" data-action="return-title">Main Menu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
