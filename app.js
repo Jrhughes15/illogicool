@@ -161,6 +161,18 @@ const projects = [
     repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Tug-o-Trivia",
     stars: 0,
     date: "2026-03-27"
+  },
+  {
+    id: "racing-reflex",
+    title: "Racing Reflex",
+    summary: "A sleek racing-inspired reflex game where you wait for the start lights, react at the signal, and chase your fastest time.",
+    tags: [
+      "game"
+    ],
+    demo: "projects/Racing Reflex/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Racing%20Reflex",
+    stars: 0,
+    date: "2026-03-28"
   }
 ];
 
