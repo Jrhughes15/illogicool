@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Racing Reflex</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="game-panel" id="gamePanel" data-state="idle" aria-label="Racing Reflex game">
+      <div class="panel-top">
+        <p class="eyebrow">Reaction Time Challenge</p>
+        <h1>Racing Reflex</h1>
+        <p class="subtitle">
+          Wait for the race signal, then hit the reaction control as fast as you can.
+          Press <strong>Space</strong> or tap <strong>React</strong>. Jump early and it is a false start.
+        </p>
+      </div>
+
+      <div class="score-strip" aria-label="Session results">
+        <article class="score-card">
+          <span class="score-label">Latest</span>
+          <strong class="score-value" id="latestScore">--.---- s</strong>
+        </article>
+        <article class="score-card">
+          <span class="score-label">Best</span>
+          <strong class="score-value accent" id="bestScore">--.---- s</strong>
+        </article>
+        <article class="score-card">
+          <span class="score-label">Clean Finishes</span>
+          <strong class="score-value" id="cleanCount">0</strong>
+        </article>
+      </div>
+
+      <section class="dashboard">
+        <div class="status-wrap">
+          <p class="status-label">Status</p>
+          <p class="status-text" id="statusText">Press Start</p>
+        </div>
+
+        <div class="lights-rig" id="lightsRig" aria-label="Race start lights">
+          <div class="light-frame">
+            <span class="start-light" data-light="0" aria-hidden="true"></span>
+            <span class="start-light" data-light="1" aria-hidden="true"></span>
+            <span class="start-light" data-light="2" aria-hidden="true"></span>
+            <span class="start-light" data-light="3" aria-hidden="true"></span>
+            <span class="start-light" data-light="4" aria-hidden="true"></span>
+          </div>
+          <p class="signal-caption" id="signalCaption">Ready on the grid</p>
+        </div>
+
+        <div class="timer-panel">
+          <p class="timer-label">Reaction Timer</p>
+          <div class="timer-display" id="timerDisplay" aria-live="polite">0.0000</div>
+          <p class="timer-units">seconds</p>
+        </div>
+
+        <div class="controls">
+          <button class="button button-primary" id="startButton" type="button">Start Round</button>
+          <button class="button button-react" id="reactionButton" type="button" disabled>
+            React
+          </button>
+          <button class="button button-secondary" id="restartButton" type="button" disabled>
+            Play Again
+          </button>
+          <button class="button button-share" id="shareButton" type="button" disabled>
+            Share Score
+          </button>
+        </div>
+
+        <div class="hints">
+          <p>Controls: tap <strong>React</strong> or press <strong>Space</strong>.</p>
+          <p id="inputHint">False starts are detected instantly before the signal.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
