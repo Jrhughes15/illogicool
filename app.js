@@ -17,7 +17,7 @@ const projects = [
   {
     id: "type-quest",
     title: "Type Quest",
-    summary: "Typing adventure with progress tracking.",
+    summary: "A typing-training game that combines guided finger-position lessons, live arcade-style reflex practice, and progress tracking to help hunt-and-peck typists build real touch-typing speed and accuracy.",
     tags: [
       "game",
       "typing"
@@ -30,7 +30,7 @@ const projects = [
   {
     id: "lagrover",
     title: "LagRover",
-    summary: "Rover puzzle with delayed command queue.",
+    summary: "A command-driven rover simulation game where you program movement sequences to navigate terrain, manage energy, and complete objectives under delayed execution constraints.",
     tags: [
       "game",
       "puzzle"
@@ -43,7 +43,7 @@ const projects = [
   {
     id: "infinite-wall-bouncer",
     title: "Infinite Wall Bouncer",
-    summary: "Ball physics toy with placeable deflectors.",
+    summary: "A browser-based musical physics sandbox where you place and tune angled note blocks on an infinite playfield, then drop a bouncing ball to perform melodies while you pan, zoom, edit, and save custom layouts.",
     tags: [
       "Game",
       "Music",
@@ -57,7 +57,7 @@ const projects = [
   {
     id: "core-supervisor",
     title: "Core Supervisor",
-    summary: "CRT style containment sim.",
+    summary: "A retro-futuristic ASCII containment simulator where you balance unstable reactor systems, manage operator communications, and survive escalating energy crises through precision control and fast decision-making.",
     tags: [
       "sim",
       "management"
@@ -70,7 +70,7 @@ const projects = [
   {
     id: "timer-program",
     title: "Timer Program",
-    summary: "Small tool made for my job - for flooring newscasts.",
+    summary: "Small timing tool made for my old job - multiple custom timers for flooring newscasts.",
     tags: [
       "tool",
       "timer",
