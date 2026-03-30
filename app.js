@@ -173,6 +173,19 @@ const projects = [
     repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Racing%20Reflex",
     stars: 0,
     date: "2026-03-28"
+  },
+  {
+    id: "focusreader",
+    title: "FocusReader",
+    summary: "FocusReader is a local-first browser reading app that lets you import documents and read them in traditional, speed-reading, and read-aloud modes with bookmarks, search, progress tracking, and customizable typography.",
+    tags: [
+      "Utility",
+      "Tool"
+    ],
+    demo: "projects/FocusReader/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/FocusReader",
+    stars: 0,
+    date: "2026-03-30"
   }
 ];
 
