@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fantasy Name Forge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23151016'/%3E%3Cpath d='M18 20h28v28H18z' fill='%23f0bd64'/%3E%3Ccircle cx='26' cy='28' r='3' fill='%23151016'/%3E%3Ccircle cx='38' cy='28' r='3' fill='%23151016'/%3E%3Ccircle cx='26' cy='40' r='3' fill='%23151016'/%3E%3Ccircle cx='38' cy='40' r='3' fill='%23151016'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="generator-panel" aria-labelledby="app-title">
+      <header class="top-bar">
+        <div>
+          <h1 id="app-title">Fantasy Name Forge</h1>
+          <p class="tagline">Roll enchanted name elements and assemble fantasy names across nine peoples.</p>
+        </div>
+
+        <label class="species-field" for="species-select">
+          <span>Species</span>
+          <select id="species-select" autocomplete="off"></select>
+        </label>
+      </header>
+
+      <section class="output-stage" aria-live="polite">
+        <h2 class="generated-name" id="generated-name">...</h2>
+        <div class="option-tabs" role="group" aria-label="Optional name parts">
+          <button class="option-button" id="add-title" type="button">Add Title</button>
+          <button class="option-button" id="add-land" type="button">Add Land</button>
+          <button class="option-button" id="favorite-name" type="button">Favorite</button>
+        </div>
+      </section>
+
+      <section class="dice-section" aria-labelledby="dice-title">
+        <div class="section-heading">
+          <h3 id="dice-title">First Name Dice</h3>
+          <p>Click a die to reroll, enter a d100 value manually, or lock rolls.</p>
+        </div>
+        <div class="dice-row" id="dice-row"></div>
+      </section>
+
+      <section class="surname-section" aria-labelledby="surname-title">
+        <div class="section-heading">
+          <h3 id="surname-title">Last Name Roll</h3>
+        </div>
+        <div class="surname-roll-card" id="surname-roll-card">
+          <button class="surname-roll" id="surname-roll" type="button" aria-label="Reroll last name structure">
+            <span class="die-label">Last Structure</span>
+            <span class="die-value" id="surname-value">1</span>
+            <span class="die-detail" id="surname-detail">-</span>
+          </button>
+          <input class="die-input surname-input" id="surname-input" type="number" min="1" max="100" inputmode="numeric" aria-label="Set surname structure roll" value="1">
+          <button class="die-lock" id="surname-lock" type="button" aria-label="Lock surname structure" title="Lock surname">Off</button>
+        </div>
+        <div class="last-roll-strip" id="last-roll-strip" aria-label="Last name component rolls"></div>
+      </section>
+
+      <section class="control-grid" aria-label="Generator controls">
+        <button class="primary-action" id="roll-all" type="button">Roll All Dice</button>
+        <button class="secondary-action" id="read-name" type="button">Read Name</button>
+        <button class="secondary-action" id="copy-name" type="button">Copy Name</button>
+        <button class="secondary-action" id="open-presets" type="button">Famous Recipes</button>
+
+        <label class="slider-field" for="speed-slider">
+          <span>Roll speed</span>
+          <input id="speed-slider" type="range" min="45" max="140" value="80">
+        </label>
+
+        <label class="toggle-field" for="sound-toggle">
+          <input id="sound-toggle" type="checkbox" checked>
+          <span>Roll sound</span>
+        </label>
+      </section>
+
+      <section class="tool-panel" aria-label="Forge tools">
+        <label class="tool-field" for="name-filter">
+          <span>Name filter</span>
+          <select id="name-filter" autocomplete="off">
+            <option value="any">Any</option>
+            <option value="short">Short</option>
+            <option value="long">Long</option>
+            <option value="soft">Soft</option>
+            <option value="harsh">Harsh</option>
+          </select>
+        </label>
+
+        <label class="tool-field batch-field" for="batch-count">
+          <span>Batch</span>
+          <select id="batch-count" autocomplete="off">
+            <option value="10">10 names</option>
+            <option value="25">25 names</option>
+            <option value="100">100 names</option>
+          </select>
+        </label>
+
+        <button class="secondary-action" id="batch-roll" type="button">Batch Roll</button>
+        <button class="secondary-action" id="open-favorites" type="button" disabled>Favorite List</button>
+        <button class="secondary-action" id="undo-roll" type="button" disabled>Undo</button>
+        <button class="secondary-action" id="redo-roll" type="button" disabled>Redo</button>
+      </section>
+
+      <section class="reader-panel" aria-labelledby="reader-title">
+        <div class="section-heading">
+          <h3 id="reader-title">Name Reader</h3>
+          <p>Use your browser voices to hear the current name.</p>
+        </div>
+        <div class="reader-controls">
+          <button class="secondary-action" id="preview-voice" type="button">Preview Voice</button>
+
+          <label class="reader-field" for="voice-select">
+            <span>Voice</span>
+            <select id="voice-select" autocomplete="off"></select>
+          </label>
+
+          <label class="reader-field" for="voice-pitch">
+            <span>Pitch <output id="pitch-value">1.0</output></span>
+            <input id="voice-pitch" type="range" min="0.5" max="2" step="0.1" value="1">
+          </label>
+
+          <label class="reader-field" for="voice-rate">
+            <span>Speed <output id="rate-value">0.9</output></span>
+            <input id="voice-rate" type="range" min="0.5" max="1.6" step="0.1" value="0.9">
+          </label>
+        </div>
+      </section>
+
+      <article class="info-panel" aria-labelledby="info-title">
+        <h3 id="info-title">Species Notes</h3>
+        <p class="species-description" id="info-description">-</p>
+        <dl>
+          <div>
+            <dt>Naming style</dt>
+            <dd id="info-style">-</dd>
+          </div>
+          <div>
+            <dt>Tone</dt>
+            <dd id="info-tone">-</dd>
+          </div>
+        </dl>
+        <ul class="trait-list" id="trait-list"></ul>
+      </article>
+
+      <article class="history-panel" aria-labelledby="history-title">
+        <div class="history-heading">
+          <h3 id="history-title">Last Rolls</h3>
+          <button class="ghost-action" id="clear-history" type="button">Clear</button>
+        </div>
+        <ol class="history-list" id="history-list"></ol>
+        <p class="history-note">Click a past name to copy it and load its rolls above.</p>
+      </article>
+
+    </section>
+  </main>
+
+  <dialog class="preset-modal" id="preset-modal" aria-labelledby="preset-title">
+    <div class="preset-dialog">
+      <header class="preset-header">
+        <div>
+          <h2 id="preset-title">Famous Recipes</h2>
+          <p>Choose a reference name to set the species, rolls, and formula recipe.</p>
+        </div>
+        <button class="ghost-action" id="close-presets" type="button">Close</button>
+      </header>
+      <div class="preset-grid" id="preset-grid"></div>
+    </div>
+  </dialog>
+
+  <dialog class="preset-modal" id="batch-modal" aria-labelledby="batch-title">
+    <div class="preset-dialog">
+      <header class="preset-header">
+        <div>
+          <h2 id="batch-title">Batch Roll</h2>
+          <p>Generate a working list with the current species and name filter.</p>
+        </div>
+        <button class="ghost-action" id="close-batch" type="button">Close</button>
+      </header>
+      <div class="batch-actions">
+        <button class="secondary-action" id="copy-batch" type="button">Copy Batch</button>
+      </div>
+      <ol class="batch-list" id="batch-list"></ol>
+    </div>
+  </dialog>
+
+  <dialog class="preset-modal" id="favorites-modal" aria-labelledby="favorites-title">
+    <div class="preset-dialog">
+      <header class="preset-header">
+        <div>
+          <h2 id="favorites-title">Favorites</h2>
+          <p>Restore, copy, or remove saved campaign-ready names.</p>
+        </div>
+        <div class="modal-actions">
+          <button class="ghost-action" id="clear-favorites" type="button">Clear</button>
+          <button class="ghost-action" id="close-favorites" type="button">Close</button>
+        </div>
+      </header>
+      <ul class="favorites-list" id="favorites-list"></ul>
+    </div>
+  </dialog>
+
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
