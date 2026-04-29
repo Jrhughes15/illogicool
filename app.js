@@ -186,6 +186,20 @@ const projects = [
     repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/FocusReader",
     stars: 0,
     date: "2026-03-30"
+  },
+  {
+    id: "fantasy-name-generator",
+    title: "Fantasy Name Generator",
+    summary: "A fantasy RPG name generator that rolls editable d100 name components to create, save, batch-generate, and refine character names across multiple peoples.",
+    tags: [
+      "Tool",
+      "RPG",
+      "D&D"
+    ],
+    demo: "projects/Fantasy Name Generator/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Fantasy%20Name%20Generator",
+    stars: 0,
+    date: "2026-04-29"
   }
 ];
 
