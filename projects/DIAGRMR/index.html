@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DIAGRMR</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <span>DIAGRMR</span>
+        <span id="headerDiagramTitle" class="header-diagram-title"></span>
+      </div>
+      <nav class="toolbar" aria-label="Diagram tools">
+        <button id="newDiagram" type="button" title="Start a fresh diagram from one location and one plot box.">New</button>
+        <span class="toolbar-separator" aria-hidden="true"></span>
+        <button id="undoDiagram" class="icon-button" type="button" title="Undo the last diagram change." aria-label="Undo" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8 5 12l4 4"/><path d="M5 12h8a5 5 0 1 1 0 10h-1"/></svg>
+        </button>
+        <button id="redoDiagram" class="icon-button" type="button" title="Redo the last undone change." aria-label="Redo" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 8 4 4-4 4"/><path d="M19 12h-8a5 5 0 1 0 0 10h1"/></svg>
+        </button>
+        <span class="toolbar-separator" aria-hidden="true"></span>
+        <button id="topmostBox" class="icon-button" type="button" title="Center the viewport on the top-most left box." aria-label="Topmost">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"/><path d="M12 20V8"/><path d="M8 12l4-4 4 4"/></svg>
+        </button>
+        <button id="leftmostBox" class="icon-button" type="button" title="Center the viewport on the farthest-left top box." aria-label="Leftmost">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4v16"/><path d="M20 12H8"/><path d="M12 8l-4 4 4 4"/></svg>
+        </button>
+        <button id="rightmostBox" class="icon-button" type="button" title="Center the viewport on the farthest-right box." aria-label="Rightmost">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4v16"/><path d="M4 12h12"/><path d="M12 8l4 4-4 4"/></svg>
+        </button>
+        <button id="bottommostBox" class="icon-button" type="button" title="Center the viewport on the bottom-most right box." aria-label="Bottommost">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16"/><path d="M12 4v12"/><path d="m8 12 4 4 4-4"/></svg>
+        </button>
+        <span class="toolbar-separator" aria-hidden="true"></span>
+        <button id="saveDiagram" type="button" title="Save the editable DIAGRMR JSON file.">Save JSON</button>
+        <label class="file-button" title="Load a saved DIAGRMR JSON file.">
+          Load JSON
+          <input id="loadDiagram" type="file" accept=".json,.diagrmr.json,application/json">
+        </label>
+        <span class="toolbar-separator" aria-hidden="true"></span>
+        <button id="lineModeToggle" type="button" title="Toggle connector mode. Shortcut: L.">Line Mode</button>
+        <button id="boxModeToggle" type="button" title="Toggle enclosing box mode. Shortcut: B.">Box Mode</button>
+        <button id="autoShiftToggle" type="button" title="Automatically open horizontal timeline space when plot boxes are added or widened.">Auto Shift</button>
+        <select id="toolbarLineStyleSelect" class="toolbar-select" title="Line style used by new manual connectors, or applied to the selected connector.">
+          <option value="solid">Solid</option>
+          <option value="level1">Round dot</option>
+          <option value="level2">Square dot</option>
+          <option value="level3">Dash</option>
+          <option value="level4">Dash dot</option>
+          <option value="level5">Long dash dot</option>
+          <option value="level6">Long dash dot dot</option>
+          <option value="level7">Long dash</option>
+        </select>
+        <span class="toolbar-separator" aria-hidden="true"></span>
+        <button id="gridToggle" type="button" title="Show or hide the viewport grid.">Grid</button>
+        <button id="themeToggle" type="button" title="Switch between light and dark theme.">Dark</button>
+        <span class="toolbar-separator" aria-hidden="true"></span>
+        <button id="zoomOut" type="button" title="Zoom out.">-</button>
+        <button id="zoomReset" type="button" title="Reset zoom to 100% while keeping the current view anchored.">100%</button>
+        <button id="zoomIn" type="button" title="Zoom in.">+</button>
+        <button id="fitHeight" type="button" title="Fit the full diagram height in the viewport.">Fit Height</button>
+        <span class="toolbar-separator" aria-hidden="true"></span>
+        <div class="toolbar-popover-wrap">
+          <button id="storySearchToggle" class="icon-button" type="button" title="Search boxes, notes, tags, connectors, and groups." aria-label="Search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
+          </button>
+          <div id="storySearchPopover" class="search-popover" hidden>
+            <div class="search-row">
+              <input id="storyFilterInput" type="search" placeholder="Search diagram" autocomplete="off">
+              <button id="storySearchClear" class="mini-icon-button" type="button" title="Clear search" aria-label="Clear search">x</button>
+              <button id="storySearchClose" class="mini-icon-button" type="button" title="Close search" aria-label="Close search">Close</button>
+            </div>
+            <div class="search-nav-row">
+              <button id="storySearchPrev" type="button" title="Previous match" aria-label="Previous match">&lt;</button>
+              <span id="storySearchCount" class="search-count">0/0</span>
+              <button id="storySearchNext" type="button" title="Next match" aria-label="Next match">&gt;</button>
+            </div>
+            <p class="search-hint">Search/filter checks box text, connector labels, enclosing boxes, story notes, and tags based on the toggles below.</p>
+            <div class="search-scope-grid" aria-label="Search scopes">
+              <label><input class="story-search-scope" type="checkbox" value="boxes" checked> Boxes</label>
+              <label><input class="story-search-scope" type="checkbox" value="connectors" checked> Connectors</label>
+              <label><input class="story-search-scope" type="checkbox" value="groups" checked> Groups</label>
+              <label><input class="story-search-scope" type="checkbox" value="notes" checked> Notes</label>
+              <label><input class="story-search-scope" type="checkbox" value="tags" checked> Tags</label>
+            </div>
+          </div>
+        </div>
+        <button id="storyDrawerToggle" type="button" title="Open or close selected item details, notes, and tags.">Details</button>
+        <button id="inspectorButton" type="button" title="Open the Diagram Manager.">Manager</button>
+        <button id="helpButton" type="button" title="Open DIAGRMR help and shortcuts.">Help</button>
+      </nav>
+    </header>
+
+    <main class="workspace-shell">
+      <button id="locationPanelTab" class="location-panel-tab side-tab" type="button" title="Collapse or expand the locations panel.">Locations</button>
+      <aside id="locationColumn" class="location-column" aria-label="Location organization" hidden>
+        <div id="locationOutline" class="location-outline">
+          <svg id="locationOutlineLines" class="location-outline-lines" aria-hidden="true"></svg>
+          <div id="locationOutlineNodes" class="location-outline-nodes"></div>
+        </div>
+      </aside>
+
+      <section id="viewport" class="viewport" aria-label="DIAGRMR canvas">
+        <div id="canvas" class="canvas">
+          <div id="groupLayer" class="group-layer"></div>
+          <svg id="connectorLayer" class="connector-layer" width="12000" height="8000" aria-hidden="true"></svg>
+          <div id="nodeLayer" class="node-layer"></div>
+        </div>
+      </section>
+    </main>
+
+    <div id="contextMenu" class="context-menu" role="menu" hidden></div>
+    <section class="minimap-section">
+      <div id="miniMap" class="mini-map" role="button" tabindex="0" aria-label="Navigate diagram map" title="Click or drag to pan around the full diagram.">
+        <svg id="miniMapSvg" aria-hidden="true"></svg>
+      </div>
+    </section>
+    <button id="miniMapTab" class="mini-map-tab" type="button" title="Show or hide map.">Map</button>
+
+    <aside id="storyDrawer" class="story-drawer" aria-label="Selected details, notes, and tags" hidden>
+      <header>
+        <div>
+          <h2>Details</h2>
+          <p id="storyDrawerTarget">Nothing selected</p>
+        </div>
+        <button id="storyDrawerClose" type="button" title="Close details.">Close</button>
+      </header>
+      <section class="details-selection-section" aria-label="Selected item specs">
+        <h3>Selected</h3>
+        <div id="selectionDetails" class="selection-details">Nothing selected</div>
+      </section>
+      <label>
+        Tags
+        <input id="storyTagsInput" type="text" placeholder="clue, theme: guilt, B-story">
+      </label>
+      <label>
+        Notes
+        <textarea id="storyNotesInput" rows="12" placeholder="Longer notes, draft prose, questions, research, continuity reminders..."></textarea>
+      </label>
+      <p class="story-drawer-hint">Tags are comma-separated.</p>
+    </aside>
+
+    <div id="diagramInspectorModal" class="modal-backdrop" hidden>
+      <section class="inspector-modal" role="dialog" aria-modal="true" aria-labelledby="diagramInspectorTitle">
+        <header class="help-header">
+          <h2 id="diagramInspectorTitle">Diagram Manager</h2>
+          <button id="diagramInspectorClose" type="button" title="Close diagram manager.">Close</button>
+        </header>
+        <div class="inspector-toolbar">
+          <div id="diagramInspectorTabs" class="inspector-tabs" role="tablist" aria-label="Inspector sections"></div>
+        </div>
+        <div id="diagramInspectorSearchRow" class="inspector-search-row">
+          <input id="diagramInspectorSearch" type="search" placeholder="Search current section" autocomplete="off">
+        </div>
+        <div id="diagramInspectorSummary" class="inspector-summary"></div>
+        <div id="diagramInspectorList" class="inspector-list"></div>
+        <div id="diagramInspectorSettings" class="inspector-settings" hidden>
+          <section id="inspectorInfoPanel" class="inspector-settings-panel" hidden>
+            <h3>Diagram Info</h3>
+            <label>
+              Title
+              <input id="diagramTitle" type="text" autocomplete="off">
+            </label>
+            <div class="info-field-grid">
+              <label>
+                Author
+                <input id="diagramAuthor" type="text" autocomplete="off" placeholder="Writer, editor, or team">
+              </label>
+              <label>
+                Date
+                <input id="diagramDate" type="text" autocomplete="off" placeholder="Draft date, era, or version date">
+              </label>
+              <label>
+                Status
+                <input id="diagramStatus" type="text" autocomplete="off" placeholder="Draft, outline, final, research...">
+              </label>
+              <label>
+                Source / Project
+                <input id="diagramSource" type="text" autocomplete="off" placeholder="Novel, film, saga, episode, source file...">
+              </label>
+            </div>
+            <label>
+              Logline / Summary
+              <textarea id="diagramLogline" rows="3" placeholder="Short description, premise, or organizing note..."></textarea>
+            </label>
+            <label>
+              Overall Notes
+              <textarea id="diagramNotes" rows="8" placeholder="General notes for this diagram, planning reminders, source notes, or continuity questions..."></textarea>
+            </label>
+          </section>
+          <section id="inspectorStylesPanel" class="inspector-settings-panel" hidden>
+            <h3>Styles</h3>
+            <div class="style-editor">
+              <section class="style-editor-section">
+                <h4>Box Colors</h4>
+                <p class="settings-note">Click a color swatch to open the safe pastel palette. These save with the diagram and dark mode uses darker versions.</p>
+                <div id="boxColorStyleList" class="style-list"></div>
+                <div id="presetColorPalette" class="palette-grid" aria-label="Preset pastel colors" hidden></div>
+              </section>
+              <section class="style-editor-section">
+                <h4>Line Meanings</h4>
+                <p class="settings-note">Labels describe what each line type means in this diagram.</p>
+                <div id="lineLabelList" class="style-list"></div>
+              </section>
+              <section class="style-editor-section custom-style-section">
+                <h4>Custom Plot Types</h4>
+                <p class="settings-note">Custom plot types appear in the plot Type menu and export legend when used.</p>
+                <div class="style-add-row">
+                  <button id="customBoxStyleSwatch" class="style-swatch custom-add-swatch" type="button" title="Choose the custom plot type color." aria-label="Choose custom plot type color"></button>
+                  <input id="customBoxStyleLabel" type="text" placeholder="Label" title="Custom box type label.">
+                  <input id="customBoxStyleColor" type="hidden" value="#d9d9d9">
+                  <button id="addCustomBoxStyle" type="button" title="Add this custom plot box color.">Add</button>
+                </div>
+                <div id="customBoxStyleList" class="style-list"></div>
+              </section>
+            </div>
+          </section>
+          <section id="inspectorHelpPanel" class="inspector-settings-panel" hidden>
+            <h3>Help</h3>
+            <div id="inspectorHelpContent" class="help-content inspector-help-content"></div>
+          </section>
+          <section id="inspectorStatsPanel" class="inspector-settings-panel" hidden>
+            <h3>Diagram Stats</h3>
+            <div id="diagramStats" class="stats-grid stats-grid-wide" aria-live="polite"></div>
+          </section>
+          <section id="inspectorExportPanel" class="inspector-settings-panel export-section" hidden>
+            <h3>Export</h3>
+            <div class="export-settings-grid">
+              <label>
+                File Type
+                <select id="exportFileType" title="Choose the export file type.">
+                  <option value="svg">SVG</option>
+                </select>
+              </label>
+              <label>
+                Background
+                <select id="exportBackground" title="Choose export background style.">
+                  <option value="grid">Grid</option>
+                  <option value="white">White</option>
+                  <option value="transparent">Transparent</option>
+                </select>
+              </label>
+              <label>
+                Margin (in)
+                <input id="exportMargin" type="number" min="0" max="3" step="0.1" value="0.5" title="Extra space around exported diagram bounds, in inches.">
+              </label>
+              <div class="export-checks">
+                <label class="check-row">
+                  <input id="exportLocationOutline" type="checkbox" title="Include the location organization column in the export.">
+                  Location diagram
+                </label>
+                <label class="check-row">
+                  <input id="exportLegend" type="checkbox" title="Include a legend for the box colors and line meanings used in this diagram.">
+                  Legend
+                </label>
+              </div>
+            </div>
+            <div id="exportSummary" class="export-summary">Bounds update after render.</div>
+            <button id="exportDiagram" class="panel-button" type="button" title="Export the used diagram bounds with margin.">Export</button>
+          </section>
+        </div>
+      </section>
+    </div>
+
+    <div id="helpModal" class="modal-backdrop" hidden>
+      <section class="help-modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+        <header class="help-header">
+          <h2 id="helpTitle">DIAGRMR Help</h2>
+          <button id="helpClose" type="button" title="Close help.">Close</button>
+        </header>
+        <div class="help-content">
+          <section>
+            <h3>Basics</h3>
+            <p>Right-click boxes to add plot points, branches, characters, notes, scene/chapter boxes, time boxes, meta boxes, and to change plot type, color, or border style.</p>
+            <p>Type directly in newly created boxes. Press Enter to finish. For new branches and rails, Tab moves from the new location box to the new plot box.</p>
+            <p>Right-click empty grid space to add rails, insert or remove horizontal timeline space, toggle panels, or switch modes.</p>
+            <p>Auto Shift opens timeline space when plot boxes are added or widened. Turn it off when you want simultaneous/manual diagramming.</p>
+          </section>
+          <section>
+            <h3>Moving And Selection</h3>
+            <p>Drag plot and location boxes from the left or right edge area. The center of a box is reserved for text editing and selection.</p>
+            <p>Ctrl-click or Cmd-click boxes to select multiple boxes, then drag them together or use the selection context menu.</p>
+          </section>
+          <section>
+            <h3>Navigation</h3>
+            <p>Drag the canvas background to pan. Hold the middle mouse button and move the mouse to auto-pan from that point.</p>
+            <p>Topmost, Bottommost, Leftmost, and Rightmost jump to the diagram extremes. Fit Height fits the top and bottom of the current diagram in view.</p>
+            <p>Zoom buttons and wheel zoom anchor to the selected box when one is selected; otherwise they use the viewport center or mouse position.</p>
+            <p>The map can be clicked or dragged to pan the viewport. Use its Map tab or the grid context menu to hide or show it.</p>
+          </section>
+          <section>
+            <h3>Lines And Boxes</h3>
+            <p>Use Line Mode to connect edge-center handles between boxes. Double-click a connector to enter line mode. Press Esc to leave line mode or cancel a pending connector.</p>
+            <p>Right-click a connector handle or connector line to delete it, change its line type, reset its route, change ports, or add arrows.</p>
+            <p>Use Box Mode to draw encompassing boxes with editable note labels. Right-click the box or note to change line type, note placement, or delete it.</p>
+          </section>
+          <section>
+            <h3>Box Types</h3>
+            <p><strong>Location</strong> boxes are yellow rail anchors. <strong>Plot</strong> boxes hold story events and can be Beginning, End, Normal, Dialogue, Death, or Speculation.</p>
+            <p><strong>Character</strong> boxes are blue attachments below plot boxes. Larger character stacks wrap into columns of four. <strong>Note</strong> boxes are small white annotations that attach beside or below their parent box.</p>
+            <p><strong>Film/Meta</strong>, <strong>Scene/Chapter</strong>, and <strong>Year/Time</strong> markers sit above the plot rails. Film and scene/chapter markers also add a yellow span above the plot.</p>
+            <p><strong>Time Passage</strong> boxes are vertical grey markers spanning location rails. <strong>Box Mode</strong> boxes are dashed enclosing regions with a small editable note label.</p>
+          </section>
+          <section>
+            <h3>Location Diagram</h3>
+            <p>The Locations side tab shows a condensed organization column for groups, subgroups, sub-locations, first/last plot jumps, character presence, and marker rails.</p>
+            <p>Right-click location boxes there to organize groups, subgroups, and sub-locations without changing the main diagram layout. The Manager includes a Location Org tab for the same hierarchy.</p>
+            <p>Marker rows appear above location rails in this order: Films, Scenes/Chapters, then Years. Each marker appears as its own clickable segment. Film and scene/chapter markers also create a yellow span directly above the related plot box; deleting either paired marker removes both.</p>
+            <p>Gather and move group rails from location context menus when you need to reorganize a cluster of related locations.</p>
+            <p>In the location diagram, the left half of a blank plot box jumps to the first plot on that rail; the right half jumps to the last plot.</p>
+          </section>
+          <section>
+            <h3>View And Export</h3>
+            <p>Grid toggles the viewport grid. Dark switches between light and dark themes. The canvas context menu includes common view, panel, and mode toggles.</p>
+            <p>The Manager includes Info, Styles, detailed Stats, Export, Location Org, Help, and searchable lists for locations, plots, notes, characters, markers, groups, and story details. Info stores title, author, dates, source/status, summary, and overall notes. Styles lets you click swatches to choose safe pastel colors, add custom plot colors, and label line types for this diagram.</p>
+            <p>Export creates an SVG of the used diagram bounds with a margin. You can include the location diagram, an optional used-styles legend, and choose grid, white, or transparent background.</p>
+            <p>Use the Manager to search and jump through locations, plots, characters, connectors, groups, story notes, tags, and the location organization tree.</p>
+            <p>The Details drawer shows selected-item specs and stores longer notes and thread/theme tags for the selected box, connector, or enclosing box. Search opens from the magnifying glass, highlights matches, supports scope toggles, and lets you jump through results with previous/next controls.</p>
+          </section>
+          <section>
+            <h3>Shortcuts</h3>
+            <dl>
+              <dt>L</dt><dd>Toggle Line Mode when not editing text.</dd>
+              <dt>B</dt><dd>Toggle Box Mode when not editing text.</dd>
+              <dt>Middle-hold</dt><dd>Auto-pan from the held point until the wheel button is released.</dd>
+              <dt>Ctrl/Cmd+Enter</dt><dd>Add a plot point after the selected box.</dd>
+              <dt>Ctrl/Cmd+Shift+C</dt><dd>Add a character below the selected plot or character box.</dd>
+              <dt>Ctrl/Cmd+Shift+B</dt><dd>Add a new branch below the selected plot box.</dd>
+              <dt>Ctrl/Cmd+F</dt><dd>Open DIAGRMR search when not editing text.</dd>
+              <dt>Esc</dt><dd>Close menus, leave line mode, or cancel connector work.</dd>
+              <dt>Ctrl/Cmd+Z</dt><dd>Undo.</dd>
+              <dt>Ctrl/Cmd+Y</dt><dd>Redo.</dd>
+            </dl>
+          </section>
+        </div>
+      </section>
+    </div>
+
+    <script src="router.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
