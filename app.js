@@ -200,6 +200,19 @@ const projects = [
     repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Fantasy%20Name%20Generator",
     stars: 0,
     date: "2026-04-29"
+  },
+  {
+    id: "diagrmr",
+    title: "DIAGRMR",
+    summary: "A web app for building large rail-based story diagrams with plot, location, character, note, time, scene, and film/meta boxes, plus connectors, grouping, search, export, and navigation tools.",
+    tags: [
+      "Utility",
+      "Tool"
+    ],
+    demo: "projects/DIAGRMR/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/DIAGRMR",
+    stars: 0,
+    date: "2026-05-21"
   }
 ];
 
