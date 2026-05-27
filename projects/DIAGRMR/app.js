@@ -6692,6 +6692,16 @@ function hideMenu() {
   contextMenu.style.visibility = '';
 }
 
+function freshNodeRect(nodeId) {
+  const rect = nodeRects.get(nodeId);
+  const node = diagram.nodes[nodeId];
+  if (!rect || !node) return rect || null;
+  return {
+    ...rect,
+    ...nodeSize(node),
+  };
+}
+
 function addPlotAfter(nodeId) {
   const source = diagram.nodes[nodeId];
   const rail = diagram.rails[source.railId];
@@ -6705,7 +6715,7 @@ function addPlotAfter(nodeId) {
     text: defaultTextFor('plot'),
     railId: rail.id,
   };
-  const sourceRect = nodeRects.get(nodeId);
+  const sourceRect = freshNodeRect(nodeId);
   const insertionX = sourceRect ? sourceRect.x + sourceRect.width + (source.type === 'location' ? LOCATION_GAP : GAP) : null;
   const insertedWidth = nodeSize(newNode).width + GAP;
   if (Number.isFinite(insertionX)) {
@@ -6743,7 +6753,7 @@ function addPlotBefore(nodeId) {
   if (!rail) return;
 
   const id = nextId('node');
-  const sourceRect = nodeRects.get(nodeId);
+  const sourceRect = freshNodeRect(nodeId);
   const newNode = {
     id,
     type: 'plot',
