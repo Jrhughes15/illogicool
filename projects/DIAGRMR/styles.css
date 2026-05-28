@@ -337,7 +337,9 @@ label {
   background-size: 24px 24px;
   border-left: 2px solid var(--chrome-border);
   border-right: 5px solid var(--panel-edge);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-gutter: stable;
 }
 
 .location-panel-tab {
@@ -380,6 +382,7 @@ body.grid-off .location-column {
   position: relative;
   min-height: 100%;
   transform-origin: 0 0;
+  min-width: var(--location-outline-scroll-width, 0px);
 }
 
 .location-outline-lines,
