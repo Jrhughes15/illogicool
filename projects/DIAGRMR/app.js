@@ -2939,7 +2939,10 @@ function updateLocationColumnWidth() {
   if (!workspaceShell || !locationOutline || locationColumn?.hidden) return;
   const contentWidth = Number(locationOutline.dataset.contentWidth) || 254;
   const scaledWidth = Math.ceil(contentWidth * transform.scale + OUTLINE_PANEL_PADDING + OUTLINE_PANEL_RIGHT_PADDING);
-  workspaceShell.style.setProperty('--location-column-width', `${Math.max(24, scaledWidth)}px`);
+  const maxWidth = Math.max(24, Math.floor(window.innerWidth * 0.5));
+  const visibleWidth = Math.min(Math.max(24, scaledWidth), maxWidth);
+  workspaceShell.style.setProperty('--location-column-width', `${visibleWidth}px`);
+  locationOutline.style.setProperty('--location-outline-scroll-width', `${Math.max(0, scaledWidth)}px`);
 }
 
 function renderEdgeHandles() {
@@ -8301,6 +8304,7 @@ window.addEventListener('resize', () => {
   positionStorySearchPopover();
   const anchor = stylePaletteAnchorForTarget(activeStyleColorTarget);
   if (anchor && presetColorPalette && !presetColorPalette.hidden) positionStylePalette(anchor);
+  updateLocationColumnWidth();
 });
 
 miniMap?.addEventListener('pointerdown', (event) => {
@@ -8532,6 +8536,11 @@ locationColumn?.addEventListener('pointercancel', (event) => {
 locationColumn?.addEventListener('wheel', (event) => {
   if (event.target.closest?.('.outline-box')) return;
   event.preventDefault();
+  const horizontalDelta = event.shiftKey ? event.deltaY : event.deltaX;
+  if (Math.abs(horizontalDelta) > Math.abs(event.deltaY) || event.shiftKey) {
+    locationColumn.scrollLeft += horizontalDelta;
+    return;
+  }
   transform.y -= event.deltaY;
   updateTransform();
 }, { passive: false });
