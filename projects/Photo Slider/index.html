@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Before / After Image Compare</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-labelledby="app-title">
+        <header class="topbar">
+          <div>
+            <p class="kicker">Image comparison tool</p>
+            <h1 id="app-title">Before / After Slider</h1>
+          </div>
+
+          <div class="topbar-actions">
+            <button id="fullscreenButton" class="utility-button" type="button">Fullscreen</button>
+          </div>
+        </header>
+
+        <div class="app-grid">
+          <section class="compare-column" aria-label="Image comparison workspace">
+            <section id="comparePanel" class="compare-panel" aria-label="Before and after image comparison">
+              <button id="exitFullscreenButton" class="fullscreen-exit" type="button">Exit fullscreen</button>
+              <div id="compareStage" class="compare-stage is-empty show-labels" data-direction="horizontal" data-compare-mode="slider">
+                <div class="empty-state">
+                  <span class="empty-icon" aria-hidden="true"></span>
+                  <h2>Upload, drop, paste, or load two images.</h2>
+                  <p>Drag the divider, zoom with the wheel, and hold Space to pan.</p>
+                </div>
+
+                <img id="afterImage" class="compare-image after-image" alt="After uploaded image">
+                <div id="beforeClip" class="before-clip">
+                  <img id="beforeImage" class="compare-image before-image" alt="Before uploaded image">
+                </div>
+
+                <div id="divider" class="divider" role="presentation">
+                  <div class="handle" aria-hidden="true">
+                    <span class="chevron chevron-left"></span>
+                    <span class="chevron chevron-right"></span>
+                  </div>
+                </div>
+
+                <div id="beforeStageLabel" class="image-label label-before">Before</div>
+                <div id="afterStageLabel" class="image-label label-after">After</div>
+              </div>
+            </section>
+
+            <div class="toolbar" aria-label="Comparison controls">
+              <div class="segmented" aria-label="Compare mode">
+                <button class="compare-mode-button active" type="button" data-compare-mode="slider" aria-pressed="true">Slider</button>
+                <button class="compare-mode-button" type="button" data-compare-mode="blend" aria-pressed="false">Blend</button>
+              </div>
+
+              <div class="segmented" aria-label="Slider direction">
+                <button class="direction-button active" type="button" data-direction="horizontal" aria-pressed="true">H</button>
+                <button class="direction-button" type="button" data-direction="vertical" aria-pressed="false">V</button>
+              </div>
+
+              <label class="range-label" for="sliderRange"><span id="rangeText">Reveal</span></label>
+              <input id="sliderRange" type="range" min="0" max="100" value="50" aria-label="Reveal or blend amount">
+
+              <button id="swapButton" class="icon-button" type="button">Swap</button>
+              <button id="labelsButton" class="icon-button active" type="button" aria-pressed="true">Labels</button>
+              <button id="themeButton" class="icon-button" type="button">Dark</button>
+              <button id="panButton" class="icon-button" type="button" aria-pressed="false">Pan</button>
+              <button id="zoomOutButton" class="icon-button" type="button">-</button>
+              <span id="zoomValue" class="zoom-value">100%</span>
+              <button id="zoomInButton" class="icon-button" type="button">+</button>
+              <button id="resetViewButton" class="icon-button" type="button">Reset view</button>
+              <button id="clearButton" class="danger-button" type="button">Clear</button>
+            </div>
+          </section>
+
+          <aside class="side-panel" aria-label="Upload and export controls">
+            <section class="panel-section">
+              <div class="panel-heading">
+                <h2>Images</h2>
+              </div>
+
+              <div class="upload-grid" aria-label="Image upload controls">
+                <section class="upload-card active" data-slot="before" tabindex="0">
+                  <div>
+                    <span class="upload-title">Before image</span>
+                    <span id="beforeFileName" class="upload-copy">Drop, paste, upload, or load URL</span>
+                  </div>
+                  <input id="beforeInput" type="file" accept="image/*">
+                  <div class="url-row">
+                    <input id="beforeUrlInput" type="url" placeholder="Image URL">
+                    <button class="small-button" type="button" data-load-url="before">Load</button>
+                  </div>
+                </section>
+
+                <section class="upload-card" data-slot="after" tabindex="0">
+                  <div>
+                    <span class="upload-title">After image</span>
+                    <span id="afterFileName" class="upload-copy">Drop, paste, upload, or load URL</span>
+                  </div>
+                  <input id="afterInput" type="file" accept="image/*">
+                  <div class="url-row">
+                    <input id="afterUrlInput" type="url" placeholder="Image URL">
+                    <button class="small-button" type="button" data-load-url="after">Load</button>
+                  </div>
+                </section>
+              </div>
+            </section>
+
+            <section class="panel-section">
+              <div class="panel-heading">
+                <h2>Labels</h2>
+              </div>
+              <div class="label-grid">
+                <label>
+                  Before label
+                  <input id="beforeLabelInput" type="text" value="Before">
+                </label>
+                <label>
+                  After label
+                  <input id="afterLabelInput" type="text" value="After">
+                </label>
+              </div>
+            </section>
+
+            <section class="panel-section">
+              <div class="panel-heading">
+                <h2>Export</h2>
+              </div>
+              <div class="export-grid">
+                <label>
+                  Format
+                  <select id="exportFormat">
+                    <option value="current">Current view PNG</option>
+                    <option value="side-by-side">Side by side PNG</option>
+                    <option value="top-bottom">Top / bottom PNG</option>
+                    <option value="gif">Animated reveal GIF</option>
+                  </select>
+                </label>
+                <label>
+                  Export width
+                  <input id="exportWidth" type="number" min="480" max="2400" step="20" value="1200">
+                </label>
+                <label>
+                  GIF frames
+                  <input id="gifFrames" type="number" min="8" max="40" step="1" value="24">
+                </label>
+                <div class="export-button-cell">
+                  <button id="exportButton" class="export-action utility-button primary" type="button">Export</button>
+                </div>
+              </div>
+              <p id="statusMessage" class="status-message" aria-live="polite"></p>
+            </section>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
