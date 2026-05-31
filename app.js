@@ -217,7 +217,7 @@ const projects = [
   {
     id: "photo-slider",
     title: "Photo Slider",
-    summary: "An image comparison tool for visually presenting transformations such as cleaning, real estate staging, restoration, and upscaling. Users can upload two images, compare them with a draggable slider or blend view, zoom into details, and export polished comparison images or animated reveals.",
+    summary: "An image comparison tool for visually presenting edits - Compare before-and-after images with sliders, blend views, zoom, and exports for cleaning, staging, restoration, upscaling, and other visual transformations.",
     tags: [
       "Utility",
       "Tool",
