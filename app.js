@@ -213,6 +213,20 @@ const projects = [
     repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/DIAGRMR",
     stars: 0,
     date: "2026-05-21"
+  },
+  {
+    id: "photo-slider",
+    title: "Photo Slider",
+    summary: "An image comparison tool for visually presenting transformations such as cleaning, real estate staging, restoration, and upscaling. Users can upload two images, compare them with a draggable slider or blend view, zoom into details, and export polished comparison images or animated reveals.",
+    tags: [
+      "Utility",
+      "Tool",
+      "Photo"
+    ],
+    demo: "projects/Photo Slider/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Photo%20Slider",
+    stars: 0,
+    date: "2026-05-31"
   }
 ];
 
