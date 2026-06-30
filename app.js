@@ -227,6 +227,20 @@ const projects = [
     repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Photo%20Slider",
     stars: 0,
     date: "2026-05-31"
+  },
+  {
+    id: "pagecast",
+    title: "PageCast",
+    summary: "PageCast is a browser-only ebook reader that detects dialogue, assigns character voices, and reads books aloud with local Web Speech voices.",
+    tags: [
+      "eBook",
+      "Tool",
+      "Utility"
+    ],
+    demo: "projects/Pagecast/index.html",
+    repo: "https://github.com/jrhughes15/illogicool/tree/main/projects/Pagecast",
+    stars: 0,
+    date: "2026-06-30"
   }
 ];
 
